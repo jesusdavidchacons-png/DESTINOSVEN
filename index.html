@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <!-- viewport-fit=cover es indispensable para iOS en horizontal -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>DESTINOS VEN | El latido de Venezuela</title>
 
@@ -54,7 +53,7 @@
     }
 
     /* ============================================================
-       CAPA 0: BLOQUEO ESTRICTO EN MÓVIL VERTICAL (PORTRAIT)
+       CAPA 0: BLOQUEO VERTICAL
        ============================================================ */
     #landscape-lock {
       display: none;
@@ -99,7 +98,6 @@
       line-height: 1.5;
     }
 
-    /* Detección automática en vertical para móviles */
     @media screen and (max-width: 950px) and (orientation: portrait) {
       #landscape-lock {
         display: flex !important;
@@ -109,9 +107,6 @@
       }
     }
 
-    /* ============================================================
-       CONTENEDOR GENERAL ADAPTADO AL SAFE AREA DEL IPHONE
-       ============================================================ */
     .container {
       width: 100%;
       max-width: 1080px;
@@ -121,7 +116,7 @@
     }
 
     /* ============================================================
-       CAPA 1: PORTADA ENCUADRADA PARA PANTALLAS PANORÁMICAS (IPHONE PRO MAX)
+       CAPA 1: PORTADA HORIZONTAL OPTIMIZADA
        ============================================================ */
     .home-layer {
       position: relative;
@@ -140,7 +135,6 @@
       background: #000000;
     }
 
-    /* Video de fondo visible al 80% sin desfases */
     .video-background {
       position: absolute;
       top: 50%;
@@ -161,7 +155,6 @@
       z-index: 2;
     }
 
-    /* Botón superior derecho protegido de la Dynamic Island */
     .top-right-skip {
       position: absolute;
       top: max(14px, env(safe-area-inset-top));
@@ -203,7 +196,6 @@
       justify-content: center;
     }
 
-    /* Logo ajustado proporcionalmente al alto del iPhone horizontal */
     .logo-hero {
       height: clamp(65px, 12vh, 110px);
       width: auto;
@@ -231,7 +223,6 @@
       line-height: 1.4;
     }
 
-    /* Fila de 3 botones adaptada para entrar en pantalla sin scroll */
     .home-buttons {
       display: flex;
       flex-direction: row;
@@ -289,7 +280,7 @@
     }
 
     /* ============================================================
-       CAPAS 2 & 3: FORMULARIOS INTERNOS CON SAFE-AREA
+       CAPAS 2 & 3: FORMULARIOS INTERNOS
        ============================================================ */
     .view-screen {
       display: none;
@@ -445,7 +436,7 @@
       cursor: pointer;
     }
 
-    /* Modal Video ajustado a Safe Areas */
+    /* Modal Video */
     .video-overlay {
       position: fixed;
       inset: 0;
@@ -464,24 +455,9 @@
 
     .video-modal-bar {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
       margin-bottom: 8px;
-    }
-
-    .skip-video-btn {
-      background: var(--yellow-brand);
-      color: #000;
-      border: none;
-      font-weight: 700;
-      font-size: 0.75rem;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-transform: uppercase;
     }
 
     .video-wrap {
@@ -549,9 +525,7 @@
 </head>
 <body>
 
-  <!-- ============================================================
-       CAPA 0: BLOQUEO VERTICAL
-       ============================================================ -->
+  <!-- CAPA 0: BLOQUEO VERTICAL -->
   <div id="landscape-lock">
     <div class="phone-rotate-icon">
       <i class="fa-solid fa-mobile-screen-button"></i>
@@ -562,9 +536,7 @@
 
   <div id="app-content">
 
-    <!-- ============================================================
-         CAPA 1: PORTADA HORIZONTAL OPTIMIZADA PARA IPHONE PRO MAX
-         ============================================================ -->
+    <!-- CAPA 1: PORTADA -->
     <section class="home-layer" id="layerHome">
       <video class="video-background" autoplay loop muted playsinline>
         <source src="banner.mp4" type="video/mp4">
@@ -572,7 +544,6 @@
 
       <div class="video-overlay-tint"></div>
 
-      <!-- Botón Saltar ajustado a Safe Area -->
       <button class="top-right-skip" onclick="quickSkipHome()">
         <span>Saltar / Ir Directo</span>
         <i class="fa-solid fa-forward-step"></i>
@@ -586,22 +557,25 @@
         </p>
 
         <div class="home-buttons">
-          <button class="btn btn-promo" onclick="playPromo(null)">
+          <!-- ÚNICO BOTÓN QUE ABRE EL VIDEO -->
+          <button class="btn btn-promo" onclick="openPromoModal()">
             <i class="fa-solid fa-circle-play"></i> Video Promocional
           </button>
-          <button class="btn btn-aliado" onclick="playPromo('layerAliados')">
+
+          <!-- VA DIRECTO AL FORMULARIO DE ALIADOS -->
+          <button class="btn btn-aliado" onclick="showLayer('layerAliados')">
             <i class="fa-solid fa-utensils"></i> Postular Empresa / Restaurante
           </button>
-          <button class="btn btn-institucional" onclick="playPromo('authModal')">
+
+          <!-- VA DIRECTO AL ACCESO INSTITUCIONAL -->
+          <button class="btn btn-institucional" onclick="openAuthModal()">
             <i class="fa-solid fa-landmark"></i> Direcciones de Turismo
           </button>
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         CAPA 2: POSTULACIÓN ALIADOS
-         ============================================================ -->
+    <!-- CAPA 2: POSTULACIÓN ALIADOS -->
     <section class="view-screen" id="layerAliados">
       <div class="container" style="max-width: 680px;">
         <div class="top-bar-nav">
@@ -682,9 +656,7 @@
       </div>
     </section>
 
-    <!-- ============================================================
-         CAPA 3: INSTITUCIONAL
-         ============================================================ -->
+    <!-- CAPA 3: INSTITUCIONAL -->
     <section class="view-screen" id="layerInstitucional">
       <div class="container">
         <div class="top-bar-nav">
@@ -724,7 +696,6 @@
             <button class="day-tag-btn" onclick="setDay(5)">Día 5</button>
           </div>
 
-          <!-- Módulos Fijos -->
           <div class="grid-2">
             <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
               <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;">1. Hospedaje & Desayuno</div>
@@ -755,7 +726,6 @@
             </div>
           </div>
 
-          <!-- Atractivos Dinámicos -->
           <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem;">5. Atractivos Turísticos del Día</div>
@@ -775,10 +745,6 @@
   <div class="video-overlay" id="videoModal">
     <div class="video-box">
       <div class="video-modal-bar">
-        <button class="skip-video-btn" onclick="closePromoModal()">
-          <span>Saltar e Ir Directo</span>
-          <i class="fa-solid fa-forward"></i>
-        </button>
         <button class="close-video" onclick="closePromoModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="video-wrap">
@@ -816,7 +782,6 @@
     let activeRoute = 'andes';
     let activeState = 'Táchira';
     let activeDay = 1;
-    let nextStepTarget = null;
 
     let productionDb = JSON.parse(localStorage.getItem('destinos_ven_db')) || {
       "Táchira": {
@@ -837,11 +802,11 @@
     });
 
     function quickSkipHome() {
-      const choice = confirm("¿Deseas saltar a 'Postular Empresa' (Aceptar) o entrar como 'Dirección de Turismo' (Cancelar)?");
+      const choice = confirm("¿Deseas ir a 'Postular Empresa' (Aceptar) o entrar como 'Dirección de Turismo' (Cancelar)?");
       if (choice) {
         showLayer('layerAliados');
       } else {
-        document.getElementById('authModal').style.display = 'flex';
+        openAuthModal();
       }
     }
 
@@ -852,8 +817,8 @@
       window.scrollTo(0, 0);
     }
 
-    function playPromo(targetNext) {
-      nextStepTarget = targetNext;
+    /* Solo abre el video si se presiona el botón promocional */
+    function openPromoModal() {
       const modal = document.getElementById('videoModal');
       const iframe = document.getElementById('promoIframe');
       iframe.src = `https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&rel=0`;
@@ -865,13 +830,11 @@
       const iframe = document.getElementById('promoIframe');
       iframe.src = "";
       modal.style.display = 'none';
+    }
 
-      if (nextStepTarget === 'authModal') {
-        document.getElementById('authModal').style.display = 'flex';
-      } else if (nextStepTarget === 'layerAliados') {
-        showLayer('layerAliados');
-      }
-      nextStepTarget = null;
+    /* Modal de Clave directo */
+    function openAuthModal() {
+      document.getElementById('authModal').style.display = 'flex';
     }
 
     function closeAuthModal() {
