@@ -2,15 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- viewport-fit=cover es indispensable para iOS en horizontal -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>DESTINOS VEN | El latido de Venezuela</title>
 
-  <!-- Tipografías Minimalistas Limpias -->
+  <!-- Tipografías Minimalistas -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
-  <!-- Iconos FontAwesome -->
+  <!-- Iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -41,25 +42,26 @@
       padding: 0;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      min-height: 100dvh;
       background-color: var(--bg-black);
       color: var(--text-white);
       font-family: var(--font-body);
-      line-height: 1.5;
+      line-height: 1.4;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
     /* ============================================================
-       CAPA 0: BLOQUEO ESTRICTO EN MÓVIL VERTICAL (PORTRAIT LOCK)
+       CAPA 0: BLOQUEO ESTRICTO EN MÓVIL VERTICAL (PORTRAIT)
        ============================================================ */
     #landscape-lock {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100vw;
-      height: 100vh;
+      height: 100dvh;
       background: #000000;
       color: #ffffff;
       z-index: 99999;
@@ -67,14 +69,14 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 30px;
+      padding: env(safe-area-inset-top, 24px) 24px env(safe-area-inset-bottom, 24px);
     }
 
     .phone-rotate-icon {
-      font-size: 3.5rem;
+      font-size: 3.2rem;
       color: var(--yellow-brand);
-      margin-bottom: 24px;
-      animation: rotatePhone 2s infinite ease-in-out;
+      margin-bottom: 20px;
+      animation: rotatePhone 2.2s infinite ease-in-out;
     }
 
     @keyframes rotatePhone {
@@ -85,19 +87,20 @@
 
     #landscape-lock h2 {
       font-family: var(--font-title);
-      font-size: 1.8rem;
-      margin-bottom: 10px;
+      font-size: 1.6rem;
+      margin-bottom: 8px;
       letter-spacing: -0.5px;
     }
 
     #landscape-lock p {
       color: #94a3b8;
-      font-size: 0.95rem;
-      max-width: 320px;
+      font-size: 0.9rem;
+      max-width: 300px;
       line-height: 1.5;
     }
 
-    @media screen and (max-width: 900px) and (orientation: portrait) {
+    /* Detección automática en vertical para móviles */
+    @media screen and (max-width: 950px) and (orientation: portrait) {
       #landscape-lock {
         display: flex !important;
       }
@@ -106,164 +109,153 @@
       }
     }
 
+    /* ============================================================
+       CONTENEDOR GENERAL ADAPTADO AL SAFE AREA DEL IPHONE
+       ============================================================ */
     .container {
-      max-width: 1140px;
+      width: 100%;
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
     }
 
     /* ============================================================
-       CAPA 1: PORTADA MINIMAL CON LOGO PROTAGÓNICO Y SIN SOMBRAS
+       CAPA 1: PORTADA ENCUADRADA PARA PANTALLAS PANORÁMICAS (IPHONE PRO MAX)
        ============================================================ */
     .home-layer {
       position: relative;
-      min-height: 100vh;
       width: 100%;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 50px 24px;
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
       overflow: hidden;
       background: #000000;
     }
 
-    /* Video de fondo visible al 80% */
+    /* Video de fondo visible al 80% sin desfases */
     .video-background {
       position: absolute;
       top: 50%;
       left: 50%;
-      min-width: 100%;
-      min-height: 100%;
-      width: auto;
-      height: auto;
-      z-index: 1;
+      width: 100%;
+      height: 100%;
       transform: translate(-50%, -50%);
       object-fit: cover;
       opacity: 0.80;
       pointer-events: none;
+      z-index: 1;
     }
 
-    /* Velo negro limpio */
     .video-overlay-tint {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: rgba(0, 0, 0, 0.45);
       z-index: 2;
     }
 
-    /* Botón Arriba a la Derecha */
+    /* Botón superior derecho protegido de la Dynamic Island */
     .top-right-skip {
       position: absolute;
-      top: 24px;
-      right: 28px;
+      top: max(14px, env(safe-area-inset-top));
+      right: max(16px, env(safe-area-inset-right));
       z-index: 10;
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(0, 0, 0, 0.65);
+      background: rgba(0, 0, 0, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.35);
       color: #ffffff;
-      padding: 9px 20px;
+      padding: 7px 16px;
       border-radius: 50px;
-      font-size: 0.85rem;
-      font-weight: 600;
+      font-size: 0.75rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      backdrop-filter: blur(8px);
     }
 
     .top-right-skip i {
       color: var(--yellow-brand);
-      transition: transform 0.2s ease;
     }
 
     .top-right-skip:hover {
       background: #ffffff;
       color: #000000;
-      border-color: #ffffff;
-    }
-
-    .top-right-skip:hover i {
-      color: var(--blue-brand);
-      transform: translateX(3px);
     }
 
     .home-content {
       position: relative;
       z-index: 3;
-      max-width: 860px;
+      width: 100%;
+      max-width: 780px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
     }
 
-    /* Logo protagónico a gran escala */
+    /* Logo ajustado proporcionalmente al alto del iPhone horizontal */
     .logo-hero {
-      height: clamp(90px, 14vw, 150px);
+      height: clamp(65px, 12vh, 110px);
       width: auto;
       object-fit: contain;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
-    /* Frase principal limpia y sin sombras */
     .home-phrase {
       font-family: var(--font-title);
-      font-size: clamp(1.8rem, 4.5vw, 3rem);
+      font-size: clamp(1.4rem, 4vh, 2.4rem);
       font-weight: 800;
       letter-spacing: 2px;
-      line-height: 1.15;
-      margin-bottom: 18px;
+      line-height: 1.1;
+      margin-bottom: 10px;
       color: var(--yellow-brand);
       text-transform: uppercase;
     }
 
     .home-tagline {
-      font-size: 1.15rem;
+      font-size: clamp(0.85rem, 2.2vh, 1.05rem);
       color: #e2e8f0;
-      max-width: 660px;
-      margin: 0 auto 38px;
+      max-width: 580px;
+      margin: 0 auto 22px;
       font-weight: 400;
-      line-height: 1.6;
+      line-height: 1.4;
     }
 
-    /* Los 3 Botones Principales */
+    /* Fila de 3 botones adaptada para entrar en pantalla sin scroll */
     .home-buttons {
       display: flex;
-      flex-direction: column;
-      gap: 14px;
+      flex-direction: row;
+      gap: 10px;
       width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    @media (min-width: 640px) {
-      .home-buttons {
-        flex-direction: row;
-        max-width: none;
-        justify-content: center;
-      }
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .btn {
       font-family: var(--font-body);
-      font-size: 0.95rem;
+      font-size: clamp(0.75rem, 1.8vh, 0.9rem);
       font-weight: 600;
-      padding: 14px 24px;
+      padding: clamp(8px, 1.6vh, 12px) clamp(14px, 2.5vw, 20px);
       border-radius: 6px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
       transition: all 0.15s ease;
       border: 1px solid transparent;
       text-decoration: none;
+      white-space: nowrap;
     }
 
     .btn-promo {
@@ -284,7 +276,6 @@
 
     .btn-aliado:hover {
       background: #ffffff;
-      transform: translateY(-2px);
     }
 
     .btn-institucional {
@@ -295,26 +286,25 @@
 
     .btn-institucional:hover {
       background: var(--blue-hover);
-      transform: translateY(-2px);
     }
 
     /* ============================================================
-       CAPA 2 & 3: VISTAS INTERNAS (LIMPIAS Y BLANCAS)
+       CAPAS 2 & 3: FORMULARIOS INTERNOS CON SAFE-AREA
        ============================================================ */
     .view-screen {
       display: none;
-      min-height: 100vh;
+      min-height: 100dvh;
       background: var(--bg-light);
       color: var(--text-dark);
-      padding: 40px 0 80px;
+      padding: max(20px, env(safe-area-inset-top)) 0 max(30px, env(safe-area-inset-bottom));
     }
 
     .top-bar-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 24px;
-      margin-bottom: 30px;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
       border-bottom: 1px solid var(--border-light);
     }
 
@@ -322,33 +312,29 @@
       background: transparent;
       border: none;
       color: #64748b;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-
-    .back-btn:hover {
-      color: var(--blue-brand);
+      gap: 6px;
     }
 
     .card-clean {
       background: #ffffff;
       border: 1px solid var(--border-light);
       border-radius: 8px;
-      padding: 32px;
+      padding: clamp(16px, 3vw, 28px);
     }
 
     .form-label {
       display: block;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #475569;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .form-input {
@@ -356,12 +342,11 @@
       background: #ffffff;
       border: 1px solid var(--border-light);
       color: var(--text-dark);
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-radius: 6px;
       font-family: var(--font-body);
-      font-size: 0.95rem;
-      margin-bottom: 16px;
-      transition: border-color 0.15s ease;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
     }
 
     .form-input:focus {
@@ -372,29 +357,23 @@
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    @media (max-width: 640px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
+      gap: 12px;
     }
 
     .routes-tabs {
       display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
+      gap: 6px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
     }
 
     .route-btn {
       background: #ffffff;
       border: 1px solid var(--border-light);
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: 6px;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       cursor: pointer;
     }
 
@@ -406,22 +385,17 @@
 
     .states-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 30px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
     }
 
     .state-item-card {
       background: #ffffff;
       border: 1px solid var(--border-light);
       border-radius: 6px;
-      padding: 18px;
+      padding: 12px 16px;
       cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .state-item-card:hover {
-      border-color: var(--blue-brand);
     }
 
     .state-item-card.active {
@@ -432,16 +406,16 @@
     .day-selector-nav {
       display: flex;
       gap: 6px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       overflow-x: auto;
     }
 
     .day-tag-btn {
       background: #ffffff;
       border: 1px solid var(--border-light);
-      padding: 6px 14px;
+      padding: 5px 12px;
       border-radius: 4px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
     }
@@ -456,47 +430,43 @@
       background: var(--bg-light);
       border: 1px solid var(--border-light);
       border-radius: 6px;
-      padding: 14px;
-      margin-bottom: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
       position: relative;
     }
 
     .btn-trash {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 8px;
+      right: 8px;
       background: transparent;
       border: none;
       color: #ef4444;
       cursor: pointer;
     }
 
-    /* Modal Video con botón de saltar */
+    /* Modal Video ajustado a Safe Areas */
     .video-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: rgba(0, 0, 0, 0.95);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 10000;
-      padding: 20px;
+      padding: max(16px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
     }
 
     .video-box {
       width: 100%;
-      max-width: 900px;
-      position: relative;
+      max-width: 800px;
     }
 
     .video-modal-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .skip-video-btn {
@@ -504,8 +474,8 @@
       color: #000;
       border: none;
       font-weight: 700;
-      font-size: 0.85rem;
-      padding: 6px 16px;
+      font-size: 0.75rem;
+      padding: 6px 14px;
       border-radius: 4px;
       cursor: pointer;
       display: flex;
@@ -514,13 +484,9 @@
       text-transform: uppercase;
     }
 
-    .skip-video-btn:hover {
-      background: var(--yellow-hover);
-    }
-
     .video-wrap {
       position: relative;
-      padding-bottom: 56.25%;
+      padding-bottom: min(52%, 400px);
       height: 0;
       border-radius: 8px;
       overflow: hidden;
@@ -540,45 +506,42 @@
       background: transparent;
       border: none;
       color: #ffffff;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       cursor: pointer;
     }
 
     /* Modal Password */
     .auth-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 9000;
-      padding: 20px;
+      padding: 16px;
     }
 
     .auth-box {
       background: #ffffff;
       color: var(--text-dark);
       border-radius: 8px;
-      padding: 30px;
+      padding: 24px;
       width: 100%;
-      max-width: 440px;
+      max-width: 380px;
       position: relative;
     }
 
     .toast {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      bottom: max(16px, env(safe-area-inset-bottom));
+      right: max(16px, env(safe-area-inset-right));
       background: var(--blue-brand);
       color: #ffffff;
-      padding: 12px 20px;
+      padding: 10px 16px;
       border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 500;
+      font-size: 0.85rem;
+      font-weight: 600;
       display: none;
       z-index: 12000;
     }
@@ -587,7 +550,7 @@
 <body>
 
   <!-- ============================================================
-       CAPA 0: BLOQUEO OBLIGATORIO HORIZONTAL PARA TELÉFONOS
+       CAPA 0: BLOQUEO VERTICAL
        ============================================================ -->
   <div id="landscape-lock">
     <div class="phone-rotate-icon">
@@ -597,85 +560,71 @@
     <p>Para ingresar y disfrutar de la experiencia cinematográfica de <b>Destinos Ven</b>, mantén tu dispositivo en posición horizontal.</p>
   </div>
 
-  <!-- CONTENIDO PRINCIPAL -->
   <div id="app-content">
 
     <!-- ============================================================
-         CAPA 1: PORTADA MINIMAL CON LOGO GRANDE Y "EL LATIDO DE VENEZUELA"
+         CAPA 1: PORTADA HORIZONTAL OPTIMIZADA PARA IPHONE PRO MAX
          ============================================================ -->
     <section class="home-layer" id="layerHome">
-      <!-- Video de fondo al 80% -->
       <video class="video-background" autoplay loop muted playsinline>
         <source src="banner.mp4" type="video/mp4">
-        Tu navegador no soporta video HTML5.
       </video>
 
-      <!-- Velo negro plano -->
       <div class="video-overlay-tint"></div>
 
-      <!-- BOTÓN SUPERIOR DERECHO: SALTAR VIDEO Y PASAR DIRECTO -->
+      <!-- Botón Saltar ajustado a Safe Area -->
       <button class="top-right-skip" onclick="quickSkipHome()">
-        <span>Saltar Video / Continuar</span>
+        <span>Saltar / Ir Directo</span>
         <i class="fa-solid fa-forward-step"></i>
       </button>
 
-      <!-- Contenido de Portada -->
       <div class="home-content">
-        <!-- Logo en gran formato -->
         <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" alt="Destinos Ven" class="logo-hero">
-
-        <!-- Frase debajo del logo sin sombras -->
         <h1 class="home-phrase">EL LATIDO DE VENEZUELA</h1>
-
         <p class="home-tagline">
-          Ruta audiovisual de estándar cinematográfico por 16 estados. Descubriendo dónde despertar, qué saborear, los íconos turísticos y la industria tecnificada del país.
+          Ruta audiovisual cinematográfica por 16 estados. Hospedaje, gastronomía emblemática, atractivos turísticos e industria tecnificada.
         </p>
 
         <div class="home-buttons">
-          <!-- BOTÓN 1: Reproduce video directo -->
           <button class="btn btn-promo" onclick="playPromo(null)">
-            <i class="fa-solid fa-circle-play"></i> Ver Video Promocional
+            <i class="fa-solid fa-circle-play"></i> Video Promocional
           </button>
-
-          <!-- BOTÓN 2: Reproduce video y lleva a postulación de aliados -->
           <button class="btn btn-aliado" onclick="playPromo('layerAliados')">
-            <i class="fa-solid fa-utensils"></i> Postular Empresa o Restaurante
+            <i class="fa-solid fa-utensils"></i> Postular Empresa / Restaurante
           </button>
-
-          <!-- BOTÓN 3: Reproduce video y solicita clave institucional -->
           <button class="btn btn-institucional" onclick="playPromo('authModal')">
-            <i class="fa-solid fa-landmark"></i> Acceso Direcciones de Turismo
+            <i class="fa-solid fa-landmark"></i> Direcciones de Turismo
           </button>
         </div>
       </div>
     </section>
 
     <!-- ============================================================
-         CAPA 2: POSTULACIÓN PARA EMPRESAS, RESTAURANTES Y HOTELES
+         CAPA 2: POSTULACIÓN ALIADOS
          ============================================================ -->
     <section class="view-screen" id="layerAliados">
-      <div class="container" style="max-width: 720px;">
+      <div class="container" style="max-width: 680px;">
         <div class="top-bar-nav">
           <button class="back-btn" onclick="showLayer('layerHome')">
-            <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
+            <i class="fa-solid fa-arrow-left"></i> Inicio
           </button>
-          <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" style="height: 38px;" alt="Logo">
+          <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" style="height: 32px;" alt="Logo">
         </div>
 
         <div class="card-clean">
-          <h2 style="font-family: var(--font-title); font-size: 1.8rem; margin-bottom: 6px;">Postula tu Establecimiento</h2>
-          <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 24px;">
-            Espacio para hoteles, restaurantes, paradores gastronómicos y agroindustrias que desean formar parte de la ruta cinematográfica de su estado.
+          <h2 style="font-family: var(--font-title); font-size: 1.5rem; margin-bottom: 4px;">Postula tu Establecimiento</h2>
+          <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 16px;">
+            Hoteles, restaurantes y agroindustrias que integrarán la producción cinematográfica del estado.
           </p>
 
           <form onsubmit="handleAliadoSubmit(event)">
             <div class="grid-2">
               <div>
                 <label class="form-label">Nombre Comercial</label>
-                <input type="text" class="form-input" required placeholder="Ej: Posada / Restaurante / Finca">
+                <input type="text" class="form-input" required placeholder="Nombre de la marca">
               </div>
               <div>
-                <label class="form-label">Estado de Venezuela</label>
+                <label class="form-label">Estado</label>
                 <select class="form-input" required id="selectEstadoAliado">
                   <option value="">Selecciona tu estado</option>
                   <option value="Táchira">Táchira</option>
@@ -700,32 +649,33 @@
 
             <div class="grid-2">
               <div>
-                <label class="form-label">Tipo de Locación</label>
+                <label class="form-label">Categoría</label>
                 <select class="form-input" required>
-                  <option value="Restaurante">Restaurante / Propuesta Gastronómica</option>
+                  <option value="Restaurante">Restaurante / Gastronomía</option>
                   <option value="Hotel">Hotel o Posada Boutique</option>
-                  <option value="Agroindustria">Empresa Tecno-Productiva / Agroindustria</option>
-                  <option value="Turismo">Destino / Atractivo Turístico</option>
+                  <option value="Agroindustria">Empresa / Agroindustria</option>
+                  <option value="Turismo">Destino / Atractivo</option>
                 </select>
               </div>
               <div>
-                <label class="form-label">Teléfono o WhatsApp de Enlace</label>
+                <label class="form-label">Teléfono / WhatsApp</label>
                 <input type="tel" class="form-input" required placeholder="+58 414 ...">
               </div>
             </div>
 
-            <div>
-              <label class="form-label">Instagram o Página Web</label>
-              <input type="text" class="form-input" placeholder="@tumarca / www.tumarca.com">
+            <div class="grid-2">
+              <div>
+                <label class="form-label">Instagram / Web</label>
+                <input type="text" class="form-input" placeholder="@cuenta">
+              </div>
+              <div>
+                <label class="form-label">Propuesta de Valor</label>
+                <input type="text" class="form-input" required placeholder="Especialidad o capacidad técnica">
+              </div>
             </div>
 
-            <div>
-              <label class="form-label">¿Por qué representa la excelencia de tu estado?</label>
-              <textarea class="form-input" rows="3" required placeholder="Describe la especialidad de cocina, instalaciones o capacidad técnica..."></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-institucional" style="width: 100%;">
-              Enviar Postulación al Equipo de Producción
+            <button type="submit" class="btn btn-institucional" style="width: 100%; margin-top: 6px;">
+              Enviar Postulación
             </button>
           </form>
         </div>
@@ -733,25 +683,19 @@
     </section>
 
     <!-- ============================================================
-         CAPA 3: INFORMACIÓN TOTAL PARA INSTITUCIONES Y DIRECTORES
+         CAPA 3: INSTITUCIONAL
          ============================================================ -->
     <section class="view-screen" id="layerInstitucional">
       <div class="container">
         <div class="top-bar-nav">
           <button class="back-btn" onclick="showLayer('layerHome')">
-            <i class="fa-solid fa-arrow-left"></i> Salir al Inicio
+            <i class="fa-solid fa-arrow-left"></i> Inicio
           </button>
-          <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.9rem;">
-            <i class="fa-solid fa-shield-check"></i> PORTAL INSTITUCIONAL OFICIAL
+          <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.85rem;">
+            <i class="fa-solid fa-shield-check"></i> PORTAL OFICIAL DE TURISMO
           </div>
         </div>
 
-        <div style="margin-bottom: 24px;">
-          <h2 style="font-family: var(--font-title); font-size: 2.2rem; letter-spacing: -0.5px;">ESTRUCTURACIÓN DE RODAJES POR ESTADO</h2>
-          <p style="color: #64748b; font-size: 0.95rem;">Selecciona una ruta y el estado a gestionar para completar sus 5 jornadas oficiales.</p>
-        </div>
-
-        <!-- Pestañas de las 4 Rutas -->
         <div class="routes-tabs">
           <button class="route-btn active" onclick="switchRouteTab('andes')">Los Andes</button>
           <button class="route-btn" onclick="switchRouteTab('llanos')">Los Llanos</button>
@@ -759,22 +703,19 @@
           <button class="route-btn" onclick="switchRouteTab('oriente')">Oriente</button>
         </div>
 
-        <!-- Grid de Estados -->
         <div class="states-grid" id="statesContainer"></div>
 
-        <!-- Constructor de los 5 Días del Estado -->
-        <div class="card-clean" style="margin-top: 30px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+        <div class="card-clean">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
             <div>
-              <span style="font-size: 0.8rem; font-weight: 700; color: var(--blue-brand); text-transform: uppercase;" id="activeStateLabel">TÁCHIRA</span>
-              <h3 style="font-family: var(--font-title); font-size: 1.6rem;" id="activeDayTitle">HOJA DE RUTA: DÍA 1</h3>
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--blue-brand);" id="activeStateLabel">TÁCHIRA</span>
+              <h3 style="font-family: var(--font-title); font-size: 1.3rem;" id="activeDayTitle">HOJA DE RUTA: DÍA 1</h3>
             </div>
             <button class="btn btn-institucional" onclick="saveDayPlan()">
-              <i class="fa-solid fa-floppy-disk"></i> Guardar Jornada
+              <i class="fa-solid fa-floppy-disk"></i> Guardar
             </button>
           </div>
 
-          <!-- Selector Día 1 al 5 -->
           <div class="day-selector-nav">
             <button class="day-tag-btn active" onclick="setDay(1)">Día 1</button>
             <button class="day-tag-btn" onclick="setDay(2)">Día 2</button>
@@ -783,99 +724,54 @@
             <button class="day-tag-btn" onclick="setDay(5)">Día 5</button>
           </div>
 
-          <!-- 1. Hospedaje & Desayuno -->
-          <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 18px; border-radius: 6px; margin-bottom: 16px;">
-            <div style="font-weight: 700; color: var(--blue-brand); margin-bottom: 12px;"><i class="fa-solid fa-hotel"></i> 1. Hospedaje & Desayuno Típico</div>
-            <div class="grid-2">
-              <div>
-                <label class="form-label">Hotel / Posada</label>
-                <input type="text" class="form-input" id="hotel_name" placeholder="Nombre de la posada o boutique">
-              </div>
-              <div>
-                <label class="form-label">Plato Insignia del Desayuno</label>
-                <input type="text" class="form-input" id="hotel_breakfast" placeholder="Ej: Pisca andina, pastelitos">
-              </div>
+          <!-- Módulos Fijos -->
+          <div class="grid-2">
+            <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;">1. Hospedaje & Desayuno</div>
+              <input type="text" class="form-input" id="hotel_name" placeholder="Hotel o Posada">
+              <input type="text" class="form-input" id="hotel_breakfast" placeholder="Plato Insignia Desayuno">
+              <input type="text" class="form-input" id="hotel_contact" placeholder="Contacto / WhatsApp">
             </div>
-            <div class="grid-2">
-              <div>
-                <label class="form-label">Contacto / Gerencia</label>
-                <input type="text" class="form-input" id="hotel_contact" placeholder="Nombre y WhatsApp">
-              </div>
-              <div>
-                <label class="form-label">Instagram</label>
-                <input type="text" class="form-input" id="hotel_social" placeholder="@cuenta">
-              </div>
+
+            <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;">2. Empresa Tecno-Productiva</div>
+              <input type="text" class="form-input" id="ind_name" placeholder="Fábrica o Agroindustria">
+              <input type="text" class="form-input" id="ind_tech" placeholder="Línea de producción">
+              <input type="text" class="form-input" id="ind_contact" placeholder="Enlace de planta">
             </div>
           </div>
 
-          <!-- 2. Empresa Tecno-Productiva -->
-          <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 18px; border-radius: 6px; margin-bottom: 16px;">
-            <div style="font-weight: 700; color: var(--blue-brand); margin-bottom: 12px;"><i class="fa-solid fa-industry"></i> 2. Empresa Tecno-Productiva (Qué se produce)</div>
-            <div class="grid-2">
-              <div>
-                <label class="form-label">Nombre de la Empresa</label>
-                <input type="text" class="form-input" id="ind_name" placeholder="Fábrica, central cafetalera o agroindustria">
-              </div>
-              <div>
-                <label class="form-label">Rubro y Nivel Tecnológico</label>
-                <input type="text" class="form-input" id="ind_tech" placeholder="Línea de producción o empaque">
-              </div>
+          <div class="grid-2">
+            <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;">3. Almuerzo Regional</div>
+              <input type="text" class="form-input" id="lunch_name" placeholder="Restaurante">
+              <input type="text" class="form-input" id="lunch_dish" placeholder="Plato autóctono">
             </div>
-            <div class="grid-2">
-              <div>
-                <label class="form-label">Enlace de Planta</label>
-                <input type="text" class="form-input" id="ind_contact" placeholder="Director / Celular">
-              </div>
-              <div>
-                <label class="form-label">Condiciones de Acceso</label>
-                <input type="text" class="form-input" id="ind_rules" placeholder="Botas, cascos, permisos">
-              </div>
+
+            <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;">4. Experiencia Nocturna (Cena)</div>
+              <input type="text" class="form-input" id="dinner_name" placeholder="Restaurante / Lounge">
+              <input type="text" class="form-input" id="dinner_dish" placeholder="Menú / Coctelería">
             </div>
           </div>
 
-          <!-- 3. Almuerzo & Cena -->
-          <div class="grid-2" style="margin-bottom: 16px;">
-            <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 18px; border-radius: 6px;">
-              <div style="font-weight: 700; color: var(--blue-brand); margin-bottom: 12px;"><i class="fa-solid fa-utensils"></i> 3. Gastronomía Regional (Almuerzo)</div>
-              <label class="form-label">Restaurante / Parador</label>
-              <input type="text" class="form-input" id="lunch_name" placeholder="Nombre del restaurante">
-              <label class="form-label">Especialidad Culinaria</label>
-              <input type="text" class="form-input" id="lunch_dish" placeholder="Plato insignia">
-              <label class="form-label">Contacto</label>
-              <input type="text" class="form-input" id="lunch_contact" placeholder="Chef y WhatsApp">
-            </div>
-
-            <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 18px; border-radius: 6px;">
-              <div style="font-weight: 700; color: var(--blue-brand); margin-bottom: 12px;"><i class="fa-solid fa-moon"></i> 4. Experiencia Nocturna (Cena)</div>
-              <label class="form-label">Restaurante / Bar de Autor</label>
-              <input type="text" class="form-input" id="dinner_name" placeholder="Nombre del local">
-              <label class="form-label">Concepto y Menú</label>
-              <input type="text" class="form-input" id="dinner_dish" placeholder="Coctelería o cena">
-              <label class="form-label">Contacto</label>
-              <input type="text" class="form-input" id="dinner_contact" placeholder="WhatsApp / Redes">
-            </div>
-          </div>
-
-          <!-- 5. Íconos y Atractivos Abiertos -->
-          <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 18px; border-radius: 6px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              <div style="font-weight: 700; color: var(--blue-brand);"><i class="fa-solid fa-mountain-sun"></i> 5. Atractivos e Íconos Turísticos del Día</div>
-              <button class="btn btn-aliado" style="font-size: 0.8rem; padding: 6px 12px; border: 1px solid var(--border-light);" onclick="addAttractionField()">
-                <i class="fa-solid fa-plus"></i> Añadir Atractivo
+          <!-- Atractivos Dinámicos -->
+          <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem;">5. Atractivos Turísticos del Día</div>
+              <button class="btn btn-aliado" style="font-size: 0.75rem; padding: 4px 10px;" onclick="addAttractionField()">
+                <i class="fa-solid fa-plus"></i> Añadir
               </button>
             </div>
             <div id="attractionsList"></div>
           </div>
-
         </div>
       </div>
     </section>
 
   </div>
 
-  <!-- ============================================================
-       MODAL REPRODUCTOR DE VIDEO PROMO
-       ============================================================ -->
+  <!-- MODAL VIDEO -->
   <div class="video-overlay" id="videoModal">
     <div class="video-box">
       <div class="video-modal-bar">
@@ -891,30 +787,21 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       MODAL CLAVE INSTITUCIONAL
-       ============================================================ -->
+  <!-- MODAL CLAVE -->
   <div class="auth-overlay" id="authModal">
     <div class="auth-box">
-      <button class="close-video" style="color: #64748b; position: absolute; top: 12px; right: 12px;" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
-      <div style="margin-bottom: 18px;">
-        <span style="font-size: 0.75rem; font-weight: 700; color: var(--blue-brand); text-transform: uppercase;">Acceso Exclusivo</span>
-        <h3 style="font-family: var(--font-title); font-size: 1.5rem; margin-top: 4px;">Direcciones de Turismo</h3>
-        <p style="color: #64748b; font-size: 0.9rem;">Ingresa la clave institucional para desbloquear la hoja de ruta estadal.</p>
-      </div>
-      <div>
-        <label class="form-label">Contraseña Oficial</label>
-        <input type="password" class="form-input" id="authPassword" placeholder="Introduce la clave">
-        <small style="color: #64748b; display: block; margin-top: -10px; margin-bottom: 14px;">Clave demo: <b>DESTINOSVEN2026</b></small>
-      </div>
+      <button class="close-video" style="color: #64748b; position: absolute; top: 10px; right: 10px;" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
+      <span style="font-size: 0.75rem; font-weight: 700; color: var(--blue-brand); text-transform: uppercase;">Acceso Exclusivo</span>
+      <h3 style="font-family: var(--font-title); font-size: 1.3rem; margin: 4px 0 10px;">Direcciones de Turismo</h3>
+      <input type="password" class="form-input" id="authPassword" placeholder="Introduce la clave">
+      <small style="color: #64748b; display: block; margin-top: -6px; margin-bottom: 12px;">Clave: <b>DESTINOSVEN2026</b></small>
       <button class="btn btn-institucional" style="width: 100%;" onclick="validateAuthKey()">
-        Validar y Ver Información Total
+        Validar y Entrar
       </button>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICACIÓN -->
-  <div class="toast" id="toastBox">Acción realizada con éxito</div>
+  <div class="toast" id="toastBox">Acción realizada</div>
 
   <script>
     const YOUTUBE_ID = "4NjxVjp5zCc";
@@ -935,13 +822,11 @@
       "Táchira": {
         days: {
           1: {
-            hotel: { name: "Posada Turística Cordero", breakfast: "Pisca Andina y Arepas de Trigo", contact: "Jesús Chacón", social: "@posadacordero" },
-            industry: { name: "Central Cafetalera de Altura", tech: "Selección electrónica de grano", contact: "Gerente de Planta", rules: "Botas de seguridad" },
-            lunch: { name: "Fogón de la Sierra", dish: "Trucha ahumada criolla", contact: "Chef Principal" },
-            dinner: { name: "Mirador Las Cumbres", dish: "Coctelería de autor", contact: "Gerente Nocturno" },
-            attractions: [
-              { name: "Páramo El Zumbador", type: "Natural / Neblina", light: "Amanecer", guide: "Guardaparques" }
-            ]
+            hotel: { name: "Posada Turística Cordero", breakfast: "Pisca Andina y Arepas", contact: "Jesús Chacón" },
+            industry: { name: "Central Cafetalera", tech: "Selección electrónica de grano", contact: "Gerente" },
+            lunch: { name: "Fogón de la Sierra", dish: "Trucha ahumada" },
+            dinner: { name: "Mirador Las Cumbres", dish: "Coctelería de autor" },
+            attractions: [{ name: "Páramo El Zumbador", type: "Natural", light: "Amanecer", guide: "Guardaparques" }]
           }
         }
       }
@@ -952,7 +837,7 @@
     });
 
     function quickSkipHome() {
-      const choice = confirm("¿Deseas saltar a 'Postular Empresa/Restaurante' (Aceptar) o ingresar como 'Dirección de Turismo' (Cancelar)?");
+      const choice = confirm("¿Deseas saltar a 'Postular Empresa' (Aceptar) o entrar como 'Dirección de Turismo' (Cancelar)?");
       if (choice) {
         showLayer('layerAliados');
       } else {
@@ -999,9 +884,9 @@
         closeAuthModal();
         showLayer('layerInstitucional');
         loadDayData();
-        showToast("Acceso validado para Direcciones de Turismo");
+        showToast("Acceso validado");
       } else {
-        alert("Clave incorrecta. Clave de validación: DESTINOSVEN2026");
+        alert("Clave incorrecta: DESTINOSVEN2026");
       }
     }
 
@@ -1025,8 +910,8 @@
           loadDayData();
         };
         item.innerHTML = `
-          <div style="font-weight: 700; font-size: 1.1rem;">${st}</div>
-          <div style="font-size: 0.85rem; color: #64748b;">5 días de rodaje</div>
+          <div style="font-weight: 700; font-size: 0.95rem;">${st}</div>
+          <div style="font-size: 0.75rem; color: #64748b;">5 días de rodaje</div>
         `;
         container.appendChild(item);
       });
@@ -1051,20 +936,16 @@
       document.getElementById('hotel_name').value = d ? (d.hotel.name || '') : '';
       document.getElementById('hotel_breakfast').value = d ? (d.hotel.breakfast || '') : '';
       document.getElementById('hotel_contact').value = d ? (d.hotel.contact || '') : '';
-      document.getElementById('hotel_social').value = d ? (d.hotel.social || '') : '';
 
       document.getElementById('ind_name').value = d ? (d.industry.name || '') : '';
       document.getElementById('ind_tech').value = d ? (d.industry.tech || '') : '';
       document.getElementById('ind_contact').value = d ? (d.industry.contact || '') : '';
-      document.getElementById('ind_rules').value = d ? (d.industry.rules || '') : '';
 
       document.getElementById('lunch_name').value = d ? (d.lunch.name || '') : '';
       document.getElementById('lunch_dish').value = d ? (d.lunch.dish || '') : '';
-      document.getElementById('lunch_contact').value = d ? (d.lunch.contact || '') : '';
 
       document.getElementById('dinner_name').value = d ? (d.dinner.name || '') : '';
       document.getElementById('dinner_dish').value = d ? (d.dinner.dish || '') : '';
-      document.getElementById('dinner_contact').value = d ? (d.dinner.contact || '') : '';
 
       const container = document.getElementById('attractionsList');
       container.innerHTML = '';
@@ -1082,24 +963,8 @@
       div.innerHTML = `
         <button class="btn-trash" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
         <div class="grid-2">
-          <div>
-            <label class="form-label">Nombre del Atractivo o Ícono</label>
-            <input type="text" class="form-input att-name" value="${data.name}" placeholder="Ej: Mirador, Cascada, Casco Histórico">
-          </div>
-          <div>
-            <label class="form-label">Tipo</label>
-            <input type="text" class="form-input att-type" value="${data.type}" placeholder="Ej: Natural / Patrimonio Cultural">
-          </div>
-        </div>
-        <div class="grid-2">
-          <div>
-            <label class="form-label">Hora Óptima de Luz</label>
-            <input type="text" class="form-input att-light" value="${data.light}" placeholder="Ej: Atardecer / Amanecer">
-          </div>
-          <div>
-            <label class="form-label">Contacto / Guía / GPS</label>
-            <input type="text" class="form-input att-guide" value="${data.guide}" placeholder="Nombre / Celular / Ubicación">
-          </div>
+          <input type="text" class="form-input att-name" value="${data.name}" placeholder="Nombre del atractivo">
+          <input type="text" class="form-input att-light" value="${data.light}" placeholder="Momento de luz (Amanecer / Tarde)">
         </div>
       `;
       box.appendChild(div);
@@ -1114,34 +979,28 @@
       const atts = [];
       attEls.forEach(el => {
         const name = el.querySelector('.att-name').value.trim();
-        const type = el.querySelector('.att-type').value.trim();
         const light = el.querySelector('.att-light').value.trim();
-        const guide = el.querySelector('.att-guide').value.trim();
-        if (name) atts.push({ name, type, light, guide });
+        if (name) atts.push({ name, light });
       });
 
       productionDb[activeState].days[activeDay] = {
         hotel: {
           name: document.getElementById('hotel_name').value.trim(),
           breakfast: document.getElementById('hotel_breakfast').value.trim(),
-          contact: document.getElementById('hotel_contact').value.trim(),
-          social: document.getElementById('hotel_social').value.trim()
+          contact: document.getElementById('hotel_contact').value.trim()
         },
         industry: {
           name: document.getElementById('ind_name').value.trim(),
           tech: document.getElementById('ind_tech').value.trim(),
-          contact: document.getElementById('ind_contact').value.trim(),
-          rules: document.getElementById('ind_rules').value.trim()
+          contact: document.getElementById('ind_contact').value.trim()
         },
         lunch: {
           name: document.getElementById('lunch_name').value.trim(),
-          dish: document.getElementById('lunch_dish').value.trim(),
-          contact: document.getElementById('lunch_contact').value.trim()
+          dish: document.getElementById('lunch_dish').value.trim()
         },
         dinner: {
           name: document.getElementById('dinner_name').value.trim(),
-          dish: document.getElementById('dinner_dish').value.trim(),
-          contact: document.getElementById('dinner_contact').value.trim()
+          dish: document.getElementById('dinner_dish').value.trim()
         },
         attractions: atts
       };
@@ -1152,16 +1011,16 @@
 
     function handleAliadoSubmit(e) {
       e.preventDefault();
-      showToast("Postulación enviada correctamente.");
+      showToast("Postulación enviada.");
       e.target.reset();
-      setTimeout(() => showLayer('layerHome'), 1500);
+      setTimeout(() => showLayer('layerHome'), 1200);
     }
 
     function showToast(msg) {
       const t = document.getElementById('toastBox');
       t.innerText = msg;
       t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 3000);
+      setTimeout(() => t.style.display = 'none', 2500);
     }
   </script>
 </body>
