@@ -5,6 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>DESTINOS VEN | El latido de Venezuela</title>
 
+  <!-- ============================================================
+       ETIQUETAS OPEN GRAPH PARA VISTA PREVIA EN WHATSAPP Y REDES
+       ============================================================ -->
+  <meta name="title" content="DESTINOS VEN | El latido de Venezuela">
+  <meta name="description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Conoce dónde hospedarte, la gastronomía emblemática, íconos turísticos y el músculo productivo del país.">
+
+  <!-- Open Graph / WhatsApp / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Destinos Ven">
+  <meta property="og:title" content="DESTINOS VEN | El latido de Venezuela">
+  <meta property="og:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Postulación de empresas y hoja de ruta turística.">
+  <meta property="og:image" content="https://i.postimg.cc/pdcML089/destinos-ven.png">
+  <meta property="og:image:secure_url" content="https://i.postimg.cc/pdcML089/destinos-ven.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DESTINOS VEN | El latido de Venezuela">
+  <meta name="twitter:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela.">
+  <meta name="twitter:image" content="https://i.postimg.cc/pdcML089/destinos-ven.png">
+
+  <!-- Favicon para navegadores -->
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/pdcML089/destinos-ven.png">
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/pdcML089/destinos-ven.png">
+
   <!-- Tipografías Minimalistas -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -557,17 +584,12 @@
         </p>
 
         <div class="home-buttons">
-          <!-- ÚNICO BOTÓN QUE ABRE EL VIDEO -->
           <button class="btn btn-promo" onclick="openPromoModal()">
             <i class="fa-solid fa-circle-play"></i> Video Promocional
           </button>
-
-          <!-- VA DIRECTO AL FORMULARIO DE ALIADOS -->
           <button class="btn btn-aliado" onclick="showLayer('layerAliados')">
             <i class="fa-solid fa-utensils"></i> Postular Empresa / Restaurante
           </button>
-
-          <!-- VA DIRECTO AL ACCESO INSTITUCIONAL -->
           <button class="btn btn-institucional" onclick="openAuthModal()">
             <i class="fa-solid fa-landmark"></i> Direcciones de Turismo
           </button>
@@ -817,7 +839,6 @@
       window.scrollTo(0, 0);
     }
 
-    /* Solo abre el video si se presiona el botón promocional */
     function openPromoModal() {
       const modal = document.getElementById('videoModal');
       const iframe = document.getElementById('promoIframe');
@@ -832,7 +853,6 @@
       modal.style.display = 'none';
     }
 
-    /* Modal de Clave directo */
     function openAuthModal() {
       document.getElementById('authModal').style.display = 'flex';
     }
