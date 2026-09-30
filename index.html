@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
-  <!-- Iconos -->
+  <!-- Iconos FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -113,7 +113,7 @@
     }
 
     /* ============================================================
-       CAPA 1: PORTADA CON VIDEO AL 80% Y OPACIDAD NEGRA
+       CAPA 1: PORTADA MINIMAL CON LOGO PROTAGÓNICO Y SIN SOMBRAS
        ============================================================ */
     .home-layer {
       position: relative;
@@ -124,12 +124,12 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 40px 24px;
+      padding: 50px 24px;
       overflow: hidden;
       background: #000000;
     }
 
-    /* Video visible al 80% */
+    /* Video de fondo visible al 80% */
     .video-background {
       position: absolute;
       top: 50%;
@@ -141,23 +141,22 @@
       z-index: 1;
       transform: translate(-50%, -50%);
       object-fit: cover;
-      opacity: 0.80; /* Video al 80% como pediste */
+      opacity: 0.80;
       pointer-events: none;
     }
 
-    /* Velo de opacidad negra elegante */
+    /* Velo negro limpio */
     .video-overlay-tint {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.45); /* Opacidad negra */
-      backdrop-filter: blur(1px);
+      background: rgba(0, 0, 0, 0.45);
       z-index: 2;
     }
 
-    /* Botón Arriba a la Derecha: Saltar Video y Pasar */
+    /* Botón Arriba a la Derecha */
     .top-right-skip {
       position: absolute;
       top: 24px;
@@ -167,14 +166,13 @@
       align-items: center;
       gap: 8px;
       background: rgba(0, 0, 0, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       color: #ffffff;
-      padding: 8px 18px;
+      padding: 9px 20px;
       border-radius: 50px;
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
-      backdrop-filter: blur(8px);
       transition: all 0.2s ease;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -199,40 +197,39 @@
     .home-content {
       position: relative;
       z-index: 3;
-      max-width: 820px;
+      max-width: 860px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
+    /* Logo protagónico a gran escala */
     .logo-hero {
-      height: 82px;
+      height: clamp(90px, 14vw, 150px);
       width: auto;
       object-fit: contain;
-      margin-bottom: 24px;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7));
+      margin-bottom: 20px;
     }
 
-    .home-title {
+    /* Frase principal limpia y sin sombras */
+    .home-phrase {
       font-family: var(--font-title);
-      font-size: clamp(2.4rem, 6vw, 4.4rem);
+      font-size: clamp(1.8rem, 4.5vw, 3rem);
       font-weight: 800;
-      letter-spacing: -1px;
-      line-height: 1.1;
-      margin-bottom: 16px;
-      color: #ffffff;
-      text-shadow: 0 4px 14px rgba(0,0,0,0.8);
-    }
-
-    .home-title span {
+      letter-spacing: 2px;
+      line-height: 1.15;
+      margin-bottom: 18px;
       color: var(--yellow-brand);
-      border-bottom: 4px solid var(--yellow-brand);
+      text-transform: uppercase;
     }
 
     .home-tagline {
       font-size: 1.15rem;
       color: #e2e8f0;
-      max-width: 640px;
+      max-width: 660px;
       margin: 0 auto 38px;
       font-weight: 400;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      line-height: 1.6;
     }
 
     /* Los 3 Botones Principales */
@@ -342,7 +339,6 @@
       border: 1px solid var(--border-light);
       border-radius: 8px;
       padding: 32px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     }
 
     .form-label {
@@ -605,7 +601,7 @@
   <div id="app-content">
 
     <!-- ============================================================
-         CAPA 1: HOME CON VIDEO AL 80%, OPACIDAD NEGRA Y BOTÓN SALTAR
+         CAPA 1: PORTADA MINIMAL CON LOGO GRANDE Y "EL LATIDO DE VENEZUELA"
          ============================================================ -->
     <section class="home-layer" id="layerHome">
       <!-- Video de fondo al 80% -->
@@ -614,7 +610,7 @@
         Tu navegador no soporta video HTML5.
       </video>
 
-      <!-- Velo con opacidad negra -->
+      <!-- Velo negro plano -->
       <div class="video-overlay-tint"></div>
 
       <!-- BOTÓN SUPERIOR DERECHO: SALTAR VIDEO Y PASAR DIRECTO -->
@@ -625,8 +621,12 @@
 
       <!-- Contenido de Portada -->
       <div class="home-content">
+        <!-- Logo en gran formato -->
         <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" alt="Destinos Ven" class="logo-hero">
-        <h1 class="home-title">DESTINOS VEN: <span>EL LATIDO DE VENEZUELA</span></h1>
+
+        <!-- Frase debajo del logo sin sombras -->
+        <h1 class="home-phrase">EL LATIDO DE VENEZUELA</h1>
+
         <p class="home-tagline">
           Ruta audiovisual de estándar cinematográfico por 16 estados. Descubriendo dónde despertar, qué saborear, los íconos turísticos y la industria tecnificada del país.
         </p>
@@ -659,7 +659,7 @@
           <button class="back-btn" onclick="showLayer('layerHome')">
             <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
           </button>
-          <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" style="height: 32px;" alt="Logo">
+          <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" style="height: 38px;" alt="Logo">
         </div>
 
         <div class="card-clean">
@@ -913,7 +913,7 @@
     </div>
   </div>
 
-  <!-- TOAST -->
+  <!-- TOAST NOTIFICACIÓN -->
   <div class="toast" id="toastBox">Acción realizada con éxito</div>
 
   <script>
@@ -951,7 +951,6 @@
       renderStatesList();
     });
 
-    // Función de salto rápido desde la esquina superior derecha
     function quickSkipHome() {
       const choice = confirm("¿Deseas saltar a 'Postular Empresa/Restaurante' (Aceptar) o ingresar como 'Dirección de Turismo' (Cancelar)?");
       if (choice) {
@@ -961,7 +960,6 @@
       }
     }
 
-    // Control de Capas
     function showLayer(layerId) {
       document.getElementById('layerHome').style.display = (layerId === 'layerHome') ? 'flex' : 'none';
       document.getElementById('layerAliados').style.display = (layerId === 'layerAliados') ? 'block' : 'none';
@@ -969,7 +967,6 @@
       window.scrollTo(0, 0);
     }
 
-    // Flujo de Video y Siguiente Capa
     function playPromo(targetNext) {
       nextStepTarget = targetNext;
       const modal = document.getElementById('videoModal');
@@ -1008,7 +1005,6 @@
       }
     }
 
-    // Funciones Capa 3: Instituciones
     function switchRouteTab(routeKey) {
       activeRoute = routeKey;
       document.querySelectorAll('.route-btn').forEach(b => b.classList.remove('active'));
