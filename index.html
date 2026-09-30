@@ -1,80 +1,1035 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Realidad Aumentada - Cuadro Mágico</title>
-    
-    <!-- Librerías de A-Frame y MindAR -->
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    
-    <style>
-      body { margin: 0; overflow: hidden; background-color: #000; }
-      #overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-        z-index: 9999; font-family: sans-serif; color: white; text-align: center;
-      }
-      #startButton {
-        padding: 20px 40px; font-size: 20px; font-weight: bold;
-        color: #000; background: #deff9a; border: none; border-radius: 50px;
-        cursor: pointer; transition: transform 0.2s;
-      }
-      #startButton:hover { transform: scale(1.05); }
-    </style>
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DESTINOS VEN | El latido de Venezuela</title>
 
-    <div id="overlay">
-      <h1 style="margin-bottom: 20px;">Cuadro Mágico AR</h1>
-      <p style="margin-bottom: 30px;">Apunta al cuadro con tus Quest 3</p>
-      <button id="startButton">INICIAR EXPERIENCIA</button>
+  <!-- Tipografías Minimalistas Limpias -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <!-- Iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-white: #ffffff;
+      --bg-light: #f8fafc;
+      --border-subtle: #e2e8f0;
+      --border-dark: #cbd5e1;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-soft: #475569;
+
+      --blue-brand: #0052cc;
+      --blue-hover: #0747a6;
+      --blue-subtle: #ebf3ff;
+
+      --yellow-brand: #ffc72c;
+      --yellow-light: #fffbeb;
+
+      --font-title: 'Syne', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-white);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       CAPA 0: BLOQUEO ESTRICTO EN MÓVIL VERTICAL (PORTRAIT LOCK)
+       ============================================================ */
+    #landscape-lock {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #0f172a;
+      color: #ffffff;
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .phone-rotate-icon {
+      font-size: 3.5rem;
+      color: var(--yellow-brand);
+      margin-bottom: 24px;
+      animation: rotatePhone 2s infinite ease-in-out;
+    }
+
+    @keyframes rotatePhone {
+      0%, 20% { transform: rotate(0deg); }
+      50%, 70% { transform: rotate(-90deg); }
+      90%, 100% { transform: rotate(0deg); }
+    }
+
+    #landscape-lock h2 {
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    #landscape-lock p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      max-width: 320px;
+      line-height: 1.5;
+    }
+
+    /* Solo se activa en pantallas pequeñas que estén en vertical */
+    @media screen and (max-width: 900px) and (orientation: portrait) {
+      #landscape-lock {
+        display: flex !important;
+      }
+      #app-content {
+        display: none !important;
+      }
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ============================================================
+       CAPA 1: PORTADA ULTRA MINIMAL (HOME DE INICIO)
+       ============================================================ */
+    .home-layer {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 24px;
+      background: var(--bg-white);
+    }
+
+    .logo-hero {
+      height: 70px;
+      width: auto;
+      object-fit: contain;
+      margin-bottom: 30px;
+    }
+
+    .home-title {
+      font-family: var(--font-title);
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      color: var(--text-main);
+    }
+
+    .home-title span {
+      color: var(--blue-brand);
+      border-bottom: 4px solid var(--yellow-brand);
+    }
+
+    .home-tagline {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 40px;
+      font-weight: 400;
+    }
+
+    /* Los 3 Botones Principales */
+    .home-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 640px) {
+      .home-buttons {
+        flex-direction: row;
+        max-width: none;
+        justify-content: center;
+      }
+    }
+
+    .btn {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 14px 24px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      text-decoration: none;
+    }
+
+    .btn-promo {
+      background: var(--yellow-brand);
+      color: #0f172a;
+      border-color: var(--yellow-brand);
+    }
+
+    .btn-promo:hover {
+      background: #f5b813;
+    }
+
+    .btn-aliado {
+      background: var(--bg-white);
+      color: var(--text-main);
+      border-color: var(--border-dark);
+    }
+
+    .btn-aliado:hover {
+      background: var(--bg-light);
+      border-color: var(--text-main);
+    }
+
+    .btn-institucional {
+      background: var(--blue-brand);
+      color: #ffffff;
+      border-color: var(--blue-brand);
+    }
+
+    .btn-institucional:hover {
+      background: var(--blue-hover);
+    }
+
+    /* ============================================================
+       CAPA 2 & 3: VISTAS INTERNAS (OCULTAS POR DEFECTO)
+       ============================================================ */
+    .view-screen {
+      display: none;
+      min-height: 100vh;
+      background: var(--bg-light);
+      padding: 40px 0 80px;
+    }
+
+    .top-bar-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      color: var(--blue-brand);
+    }
+
+    .card-clean {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 32px;
+    }
+
+    /* Formularios */
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--blue-brand);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 640px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Rutas y Estados en Capa Institucional */
+    .routes-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .route-btn {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .route-btn.active {
+      background: var(--blue-brand);
+      color: #ffffff;
+      border-color: var(--blue-brand);
+    }
+
+    .states-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .state-item-card {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .state-item-card:hover {
+      border-color: var(--blue-brand);
+    }
+
+    .state-item-card.active {
+      border-color: var(--blue-brand);
+      background: var(--blue-subtle);
+    }
+
+    .day-selector-nav {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .day-tag-btn {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .day-tag-btn.active {
+      background: var(--blue-brand);
+      color: #ffffff;
+      border-color: var(--blue-brand);
+    }
+
+    .attraction-clean-box {
+      background: var(--bg-light);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .btn-trash {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+    }
+
+    /* Modal Video */
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.94);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+
+    .video-box {
+      width: 100%;
+      max-width: 900px;
+      position: relative;
+    }
+
+    .video-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .close-video {
+      position: absolute;
+      top: -36px;
+      right: 0;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    /* Modal Password */
+    .auth-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9000;
+      padding: 20px;
+    }
+
+    .auth-box {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 30px;
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--blue-brand);
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: none;
+      z-index: 12000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       CAPA 0: BLOQUEO OBLIGATORIO HORIZONTAL PARA TELÉFONOS
+       ============================================================ -->
+  <div id="landscape-lock">
+    <div class="phone-rotate-icon">
+      <i class="fa-solid fa-mobile-screen-button"></i>
     </div>
+    <h2>GIRA TU TELÉFONO</h2>
+    <p>Para ingresar y disfrutar de la experiencia cinematográfica de <b>Destinos Ven</b>, mantén tu dispositivo en posición horizontal.</p>
+  </div>
 
-    <!-- Escena AR configurada para WebAR -->
-    <a-scene 
-      mindar-image="imageTargetSrc: ./marcador.mind; filterMinCF: 0.0001; filterBeta: 0.001;" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false"
-      embedded>
-      
-      <a-assets>
-        <!-- Asegúrate de que el nombre del archivo de video sea exacto -->
-        <video id="videoProyectado" src="./video.mp4" loop="true" crossorigin="anonymous" playsinline muted></video>
-      </a-assets>
+  <!-- CONTENIDO PRINCIPAL -->
+  <div id="app-content">
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <!-- ============================================================
+         CAPA 1: HOME MINIMALISTA CON LOS 3 BOTONES
+         ============================================================ -->
+    <section class="home-layer" id="layerHome">
+      <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" alt="Destinos Ven" class="logo-hero">
+      <h1 class="home-title">DESTINOS VEN: <span>EL LATIDO DE VENEZUELA</span></h1>
+      <p class="home-tagline">
+        Ruta audiovisual de estándar cinematográfico por 16 estados. Descubriendo dónde despertar, qué saborear, los íconos turísticos y la industria tecnificada del país.
+      </p>
 
-      <!-- El objetivo es el índice 0 del archivo marcador.mind -->
-      <a-entity mindar-image-target="targetIndex: 0" id="objetivo">
-        <a-video src="#videoProyectado" width="1" height="0.6" position="0 0 0"></a-video>
-      </a-entity>
-      
-    </a-scene>
+      <div class="home-buttons">
+        <!-- BOTÓN 1: Reproduce video directo -->
+        <button class="btn btn-promo" onclick="playPromo(null)">
+          <i class="fa-solid fa-circle-play"></i> Ver Video Promocional
+        </button>
 
-    <script>
-      const overlay = document.querySelector('#overlay');
-      const startButton = document.querySelector('#startButton');
-      const video = document.querySelector('#videoProyectado');
-      const objetivo = document.querySelector('#objetivo');
+        <!-- BOTÓN 2: Reproduce video y lleva a postulación de empresas/restaurantes -->
+        <button class="btn btn-aliado" onclick="playPromo('layerAliados')">
+          <i class="fa-solid fa-utensils"></i> Postular Empresa o Restaurante
+        </button>
 
-      // Desbloqueo de audio y inicio de video al pulsar el botón
-      startButton.addEventListener('click', () => {
-        overlay.style.display = 'none';
-        video.muted = false;
-        video.play().catch(console.error);
+        <!-- BOTÓN 3: Reproduce video y solicita clave para entrar a la información total -->
+        <button class="btn btn-institucional" onclick="playPromo('authModal')">
+          <i class="fa-solid fa-landmark"></i> Acceso Direcciones de Turismo
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CAPA 2: POSTULACIÓN PARA EMPRESAS, RESTAURANTES Y HOTELES
+         ============================================================ -->
+    <section class="view-screen" id="layerAliados">
+      <div class="container" style="max-width: 720px;">
+        <div class="top-bar-nav">
+          <button class="back-btn" onclick="showLayer('layerHome')">
+            <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
+          </button>
+          <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" style="height: 32px;" alt="Logo">
+        </div>
+
+        <div class="card-clean">
+          <h2 style="font-family: var(--font-title); font-size: 1.8rem; margin-bottom: 6px;">Postula tu Establecimiento</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">
+            Espacio para hoteles, restaurantes, paradores gastronómicos y agroindustrias que desean formar parte de la ruta cinematográfica de su estado.
+          </p>
+
+          <form onsubmit="handleAliadoSubmit(event)">
+            <div class="grid-2">
+              <div>
+                <label class="form-label">Nombre Comercial</label>
+                <input type="text" class="form-input" required placeholder="Ej: Posada / Restaurante / Finca">
+              </div>
+              <div>
+                <label class="form-label">Estado de Venezuela</label>
+                <select class="form-input" required id="selectEstadoAliado">
+                  <option value="">Selecciona tu estado</option>
+                  <option value="Táchira">Táchira</option>
+                  <option value="Mérida">Mérida</option>
+                  <option value="Trujillo">Trujillo</option>
+                  <option value="Barinas">Barinas</option>
+                  <option value="Portuguesa">Portuguesa</option>
+                  <option value="Apure">Apure</option>
+                  <option value="Carabobo">Carabobo</option>
+                  <option value="Aragua">Aragua</option>
+                  <option value="Yaracuy">Yaracuy</option>
+                  <option value="Lara">Lara</option>
+                  <option value="Falcón">Falcón</option>
+                  <option value="Zulia">Zulia</option>
+                  <option value="Miranda">Miranda</option>
+                  <option value="Anzoátegui">Anzoátegui</option>
+                  <option value="Sucre">Sucre</option>
+                  <option value="Monagas">Monagas</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label class="form-label">Tipo de Locación</label>
+                <select class="form-input" required>
+                  <option value="Restaurante">Restaurante / Propuesta Gastronómica</option>
+                  <option value="Hotel">Hotel o Posada Boutique</option>
+                  <option value="Agroindustria">Empresa Tecno-Productiva / Agroindustria</option>
+                  <option value="Turismo">Destino / Atractivo Turístico</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Teléfono o WhatsApp de Enlace</label>
+                <input type="tel" class="form-input" required placeholder="+58 414 ...">
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label">Instagram o Página Web</label>
+              <input type="text" class="form-input" placeholder="@tumarca / www.tumarca.com">
+            </div>
+
+            <div>
+              <label class="form-label">¿Por qué representa la excelencia de tu estado?</label>
+              <textarea class="form-input" rows="3" required placeholder="Describe la especialidad de cocina, instalaciones o capacidad técnica..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-institucional" style="width: 100%;">
+              Enviar Postulación al Equipo de Producción
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CAPA 3: INFORMACIÓN TOTAL PARA INSTITUCIONES Y DIRECTORES
+         ============================================================ -->
+    <section class="view-screen" id="layerInstitucional">
+      <div class="container">
+        <div class="top-bar-nav">
+          <button class="back-btn" onclick="showLayer('layerHome')">
+            <i class="fa-solid fa-arrow-left"></i> Salir al Inicio
+          </button>
+          <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.9rem;">
+            <i class="fa-solid fa-shield-check"></i> PORTAL INSTITUCIONAL OFICIAL
+          </div>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: var(--font-title); font-size: 2.2rem; letter-spacing: -0.5px;">ESTRUCTURACIÓN DE RODAJES POR ESTADO</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Selecciona una ruta y el estado a gestionar para completar sus 5 jornadas oficiales.</p>
+        </div>
+
+        <!-- Pestañas de las 4 Rutas -->
+        <div class="routes-tabs">
+          <button class="route-btn active" onclick="switchRouteTab('andes')">Los Andes</button>
+          <button class="route-btn" onclick="switchRouteTab('llanos')">Los Llanos</button>
+          <button class="route-btn" onclick="switchRouteTab('centro')">Centro Occidente</button>
+          <button class="route-btn" onclick="switchRouteTab('oriente')">Oriente</button>
+        </div>
+
+        <!-- Grid de Estados -->
+        <div class="states-grid" id="statesContainer"></div>
+
+        <!-- Constructor de los 5 Días del Estado -->
+        <div class="card-clean" style="margin-top: 30px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--blue-brand); text-transform: uppercase;" id="activeStateLabel">TÁCHIRA</span>
+              <h3 style="font-family: var(--font-title); font-size: 1.6rem;" id="activeDayTitle">HOJA DE RUTA: DÍA 1</h3>
+            </div>
+            <button class="btn btn-institucional" onclick="saveDayPlan()">
+              <i class="fa-solid fa-floppy-disk"></i> Guardar Jornada
+            </button>
+          </div>
+
+          <!-- Selector Día 1 al 5 -->
+          <div class="day-selector-nav">
+            <button class="day-tag-btn active" onclick="setDay(1)">Día 1</button>
+            <button class="day-tag-btn" onclick="setDay(2)">Día 2</button>
+            <button class="day-tag-btn" onclick="setDay(3)">Día 3</button>
+            <button class="day-tag-btn" onclick="setDay(4)">Día 4</button>
+            <button class="day-tag-btn" onclick="setDay(5)">Día 5</button>
+          </div>
+
+          <!-- 1. Hospedaje & Desayuno -->
+          <div style="background: var(--bg-light); border: 1px solid var(--border-subtle); padding: 18px; border-radius: 6px; margin-bottom: 16px;">
+            <div style="font-weight: 700; color: var(--blue-brand); margin-bottom: 12px;"><i class="fa-solid fa-hotel"></i> 1. Hospedaje & Desayuno Típico</div>
+            <div class="grid-2">
+              <div>
+                <label class="form-label">Hotel / Posada</label>
+                <input type="text" class="form-input" id="hotel_name" placeholder="Nombre de la posada o boutique">
+              </div>
+              <div>
+                <label class="form-label">Plato Insignia del Desayuno</label>
+                <input type="text" class="form-input" id="hotel_breakfast" placeholder="Ej: Pisca andina, pastelitos">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div>
+                <label class="form-label">Contacto / Gerencia</label>
+                <input type="text" class="form-input" id="hotel_contact" placeholder="Nombre y WhatsApp">
+              </div>
+              <div>
+                <label class="form-label">Instagram</label>
+                <input type="text" class="form-input" id="hotel_social" placeholder="@cuenta">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Empresa Tecno-Productiva -->
+          <div style="background: var(--bg-light); border: 1px solid var(--border-subtle); padding: 18px; border-radius: 6px; margin-bottom: 16px;">
+            <div style="font-weight: 700; color: var(--blue-brand); margin-bottom: 12px;"><i class="fa-solid fa-industry"></i> 2. Empresa Tecno-Productiva (Qué se produce)</div>
+            <div class="grid-2">
+              <div>
+                <label class="form-label">Nombre de la Empresa</label>
+                <input type="text" class="form-input" id="ind_name" placeholder="Fábrica, central cafetalera o agroindustria">
+              </div>
+              <div>
+                <label class="form-label">Rubro y Nivel Tecnológico</label>
+                <input type="text" class="form-input" id="ind_tech" placeholder="Línea de producción o empaque">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div>
+                <label class="form-label">Enlace de Planta</label>
+                <input type="text" class="form-input" id="ind_contact" placeholder="Director / Celular">
+              </div>
+              <div>
+                <label class="form-label">Condiciones de Acceso</label>
+                <input type="text" class="form-input" id="ind_rules" placeholder="Botas, cascos, permisos">
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Almuerzo & Cena -->
+          <div class="grid-2" style="margin-bottom: 16px;">
+            <div style="background: var(--bg-light); border: 1px solid var(--border-subtle); padding: 18px; border-radius: 6px;">
+              <div style="font-weight: 700; color: var(--blue-brand); margin-bottom: 12px;"><i class="fa-solid fa-utensils"></i> 3. Gastronomía Regional (Almuerzo)</div>
+              <label class="form-label">Restaurante / Parador</label>
+              <input type="text" class="form-input" id="lunch_name" placeholder="Nombre del restaurante">
+              <label class="form-label">Especialidad Culinaria</label>
+              <input type="text" class="form-input" id="lunch_dish" placeholder="Plato insignia">
+              <label class="form-label">Contacto</label>
+              <input type="text" class="form-input" id="lunch_contact" placeholder="Chef y WhatsApp">
+            </div>
+
+            <div style="background: var(--bg-light); border: 1px solid var(--border-subtle); padding: 18px; border-radius: 6px;">
+              <div style="font-weight: 700; color: var(--blue-brand); margin-bottom: 12px;"><i class="fa-solid fa-moon"></i> 4. Experiencia Nocturna (Cena)</div>
+              <label class="form-label">Restaurante / Bar de Autor</label>
+              <input type="text" class="form-input" id="dinner_name" placeholder="Nombre del local">
+              <label class="form-label">Concepto y Menú</label>
+              <input type="text" class="form-input" id="dinner_dish" placeholder="Coctelería o cena">
+              <label class="form-label">Contacto</label>
+              <input type="text" class="form-input" id="dinner_contact" placeholder="WhatsApp / Redes">
+            </div>
+          </div>
+
+          <!-- 5. Íconos y Atractivos Abiertos -->
+          <div style="background: var(--bg-light); border: 1px solid var(--border-subtle); padding: 18px; border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div style="font-weight: 700; color: var(--blue-brand);"><i class="fa-solid fa-mountain-sun"></i> 5. Atractivos e Íconos Turísticos del Día</div>
+              <button class="btn btn-aliado" style="font-size: 0.8rem; padding: 6px 12px;" onclick="addAttractionField()">
+                <i class="fa-solid fa-plus"></i> Añadir Atractivo
+              </button>
+            </div>
+            <div id="attractionsList"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================================================
+       MODAL REPRODUCTOR DE VIDEO PROMO
+       ============================================================ -->
+  <div class="video-overlay" id="videoModal">
+    <div class="video-box">
+      <button class="close-video" onclick="closePromoModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="video-wrap">
+        <iframe id="promoIframe" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL CLAVE INSTITUCIONAL
+       ============================================================ -->
+  <div class="auth-overlay" id="authModal">
+    <div class="auth-box">
+      <button class="close-video" style="color: var(--text-muted); top: 12px; right: 12px;" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div style="margin-bottom: 18px;">
+        <span style="font-size: 0.75rem; font-weight: 700; color: var(--blue-brand); text-transform: uppercase;">Acceso Exclusivo</span>
+        <h3 style="font-family: var(--font-title); font-size: 1.5rem; margin-top: 4px;">Direcciones de Turismo</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Ingresa la clave institucional para desbloquear la hoja de ruta estadal.</p>
+      </div>
+      <div>
+        <label class="form-label">Contraseña Oficial</label>
+        <input type="password" class="form-input" id="authPassword" placeholder="Introduce la clave">
+        <small style="color: var(--text-muted); display: block; margin-top: -10px; margin-bottom: 14px;">Clave demo: <b>DESTINOSVEN2026</b></small>
+      </div>
+      <button class="btn btn-institucional" style="width: 100%;" onclick="validateAuthKey()">
+        Validar y Ver Información Total
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toastBox">Acción realizada con éxito</div>
+
+  <script>
+    const YOUTUBE_ID = "4NjxVjp5zCc";
+
+    const routes = {
+      andes: { name: "Los Andes", states: ["Táchira", "Mérida", "Trujillo"] },
+      llanos: { name: "Los Llanos", states: ["Barinas", "Portuguesa", "Apure"] },
+      centro: { name: "Centro Occidente", states: ["Carabobo", "Aragua", "Yaracuy", "Lara", "Falcón", "Zulia"] },
+      oriente: { name: "Oriente", states: ["Miranda", "Anzoátegui", "Sucre", "Monagas"] }
+    };
+
+    let activeRoute = 'andes';
+    let activeState = 'Táchira';
+    let activeDay = 1;
+    let nextStepTarget = null;
+
+    let productionDb = JSON.parse(localStorage.getItem('destinos_ven_db')) || {
+      "Táchira": {
+        days: {
+          1: {
+            hotel: { name: "Posada Turística Cordero", breakfast: "Pisca Andina y Arepas de Trigo", contact: "Jesús Chacón", social: "@posadacordero" },
+            industry: { name: "Central Cafetalera de Altura", tech: "Selección electrónica de grano", contact: "Gerente de Planta", rules: "Botas de seguridad" },
+            lunch: { name: "Fogón de la Sierra", dish: "Trucha ahumada criolla", contact: "Chef Principal" },
+            dinner: { name: "Mirador Las Cumbres", dish: "Coctelería de autor", contact: "Gerente Nocturno" },
+            attractions: [
+              { name: "Páramo El Zumbador", type: "Natural / Neblina", light: "Amanecer", guide: "Guardaparques" }
+            ]
+          }
+        }
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderStatesList();
+    });
+
+    // Control de Capas
+    function showLayer(layerId) {
+      document.getElementById('layerHome').style.display = (layerId === 'layerHome') ? 'flex' : 'none';
+      document.getElementById('layerAliados').style.display = (layerId === 'layerAliados') ? 'block' : 'none';
+      document.getElementById('layerInstitucional').style.display = (layerId === 'layerInstitucional') ? 'block' : 'none';
+      window.scrollTo(0, 0);
+    }
+
+    // Flujo de Video y Siguiente Capa
+    function playPromo(targetNext) {
+      nextStepTarget = targetNext;
+      const modal = document.getElementById('videoModal');
+      const iframe = document.getElementById('promoIframe');
+      iframe.src = `https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&rel=0`;
+      modal.style.display = 'flex';
+    }
+
+    function closePromoModal() {
+      const modal = document.getElementById('videoModal');
+      const iframe = document.getElementById('promoIframe');
+      iframe.src = "";
+      modal.style.display = 'none';
+
+      if (nextStepTarget === 'authModal') {
+        document.getElementById('authModal').style.display = 'flex';
+      } else if (nextStepTarget === 'layerAliados') {
+        showLayer('layerAliados');
+      }
+      nextStepTarget = null;
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').style.display = 'none';
+    }
+
+    function validateAuthKey() {
+      const key = document.getElementById('authPassword').value.trim();
+      if (key === 'DESTINOSVEN2026') {
+        closeAuthModal();
+        showLayer('layerInstitucional');
+        loadDayData();
+        showToast("Acceso validado para Direcciones de Turismo");
+      } else {
+        alert("Clave incorrecta. Clave de validación: DESTINOSVEN2026");
+      }
+    }
+
+    // Funciones Capa 3: Instituciones
+    function switchRouteTab(routeKey) {
+      activeRoute = routeKey;
+      document.querySelectorAll('.route-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      activeState = routes[routeKey].states[0];
+      renderStatesList();
+    }
+
+    function renderStatesList() {
+      const container = document.getElementById('statesContainer');
+      container.innerHTML = '';
+      routes[activeRoute].states.forEach(st => {
+        const item = document.createElement('div');
+        item.className = `state-item-card ${st === activeState ? 'active' : ''}`;
+        item.onclick = () => {
+          activeState = st;
+          renderStatesList();
+          loadDayData();
+        };
+        item.innerHTML = `
+          <div style="font-weight: 700; font-size: 1.1rem;">${st}</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">5 días de rodaje</div>
+        `;
+        container.appendChild(item);
+      });
+      loadDayData();
+    }
+
+    function setDay(dayNum) {
+      activeDay = dayNum;
+      document.querySelectorAll('.day-tag-btn').forEach((b, i) => {
+        b.classList.toggle('active', (i + 1) === dayNum);
+      });
+      loadDayData();
+    }
+
+    function loadDayData() {
+      document.getElementById('activeStateLabel').innerText = activeState.toUpperCase();
+      document.getElementById('activeDayTitle').innerText = `HOJA DE RUTA: DÍA ${activeDay}`;
+
+      const stateData = productionDb[activeState];
+      const d = (stateData && stateData.days && stateData.days[activeDay]) ? stateData.days[activeDay] : null;
+
+      document.getElementById('hotel_name').value = d ? (d.hotel.name || '') : '';
+      document.getElementById('hotel_breakfast').value = d ? (d.hotel.breakfast || '') : '';
+      document.getElementById('hotel_contact').value = d ? (d.hotel.contact || '') : '';
+      document.getElementById('hotel_social').value = d ? (d.hotel.social || '') : '';
+
+      document.getElementById('ind_name').value = d ? (d.industry.name || '') : '';
+      document.getElementById('ind_tech').value = d ? (d.industry.tech || '') : '';
+      document.getElementById('ind_contact').value = d ? (d.industry.contact || '') : '';
+      document.getElementById('ind_rules').value = d ? (d.industry.rules || '') : '';
+
+      document.getElementById('lunch_name').value = d ? (d.lunch.name || '') : '';
+      document.getElementById('lunch_dish').value = d ? (d.lunch.dish || '') : '';
+      document.getElementById('lunch_contact').value = d ? (d.lunch.contact || '') : '';
+
+      document.getElementById('dinner_name').value = d ? (d.dinner.name || '') : '';
+      document.getElementById('dinner_dish').value = d ? (d.dinner.dish || '') : '';
+      document.getElementById('dinner_contact').value = d ? (d.dinner.contact || '') : '';
+
+      const container = document.getElementById('attractionsList');
+      container.innerHTML = '';
+      if (d && d.attractions && d.attractions.length > 0) {
+        d.attractions.forEach(a => addAttractionField(a));
+      } else {
+        addAttractionField({ name: '', type: '', light: '', guide: '' });
+      }
+    }
+
+    function addAttractionField(data = { name: '', type: '', light: '', guide: '' }) {
+      const box = document.getElementById('attractionsList');
+      const div = document.createElement('div');
+      div.className = 'attraction-clean-box';
+      div.innerHTML = `
+        <button class="btn-trash" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+        <div class="grid-2">
+          <div>
+            <label class="form-label">Nombre del Atractivo o Ícono</label>
+            <input type="text" class="form-input att-name" value="${data.name}" placeholder="Ej: Mirador, Cascada, Casco Histórico">
+          </div>
+          <div>
+            <label class="form-label">Tipo</label>
+            <input type="text" class="form-input att-type" value="${data.type}" placeholder="Ej: Natural / Patrimonio Cultural">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label class="form-label">Hora Óptima de Luz</label>
+            <input type="text" class="form-input att-light" value="${data.light}" placeholder="Ej: Atardecer / Amanecer">
+          </div>
+          <div>
+            <label class="form-label">Contacto / Guía / GPS</label>
+            <input type="text" class="form-input att-guide" value="${data.guide}" placeholder="Nombre / Celular / Ubicación">
+          </div>
+        </div>
+      `;
+      box.appendChild(div);
+    }
+
+    function saveDayPlan() {
+      if (!productionDb[activeState]) {
+        productionDb[activeState] = { days: {} };
+      }
+
+      const attEls = document.querySelectorAll('.attraction-clean-box');
+      const atts = [];
+      attEls.forEach(el => {
+        const name = el.querySelector('.att-name').value.trim();
+        const type = el.querySelector('.att-type').value.trim();
+        const light = el.querySelector('.att-light').value.trim();
+        const guide = el.querySelector('.att-guide').value.trim();
+        if (name) atts.push({ name, type, light, guide });
       });
 
-      // Control de reproducción según tracking
-      objetivo.addEventListener("targetFound", () => {
-        video.play();
-      });
-      
-      objetivo.addEventListener("targetLost", () => {
-        video.pause();
-      });
-    </script>
-  </body>
+      productionDb[activeState].days[activeDay] = {
+        hotel: {
+          name: document.getElementById('hotel_name').value.trim(),
+          breakfast: document.getElementById('hotel_breakfast').value.trim(),
+          contact: document.getElementById('hotel_contact').value.trim(),
+          social: document.getElementById('hotel_social').value.trim()
+        },
+        industry: {
+          name: document.getElementById('ind_name').value.trim(),
+          tech: document.getElementById('ind_tech').value.trim(),
+          contact: document.getElementById('ind_contact').value.trim(),
+          rules: document.getElementById('ind_rules').value.trim()
+        },
+        lunch: {
+          name: document.getElementById('lunch_name').value.trim(),
+          dish: document.getElementById('lunch_dish').value.trim(),
+          contact: document.getElementById('lunch_contact').value.trim()
+        },
+        dinner: {
+          name: document.getElementById('dinner_name').value.trim(),
+          dish: document.getElementById('dinner_dish').value.trim(),
+          contact: document.getElementById('dinner_contact').value.trim()
+        },
+        attractions: atts
+      };
+
+      localStorage.setItem('destinos_ven_db', JSON.stringify(productionDb));
+      showToast(`Día ${activeDay} de ${activeState} guardado.`);
+    }
+
+    function handleAliadoSubmit(e) {
+      e.preventDefault();
+      showToast("Postulación enviada correctamente.");
+      e.target.reset();
+      setTimeout(() => showLayer('layerHome'), 1500);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toastBox');
+      t.innerText = msg;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+  </script>
+</body>
 </html>
