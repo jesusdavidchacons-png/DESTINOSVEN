@@ -97,7 +97,6 @@
       line-height: 1.5;
     }
 
-    /* Solo se activa en pantallas pequeñas que estén en vertical */
     @media screen and (max-width: 900px) and (orientation: portrait) {
       #landscape-lock {
         display: flex !important;
@@ -114,24 +113,61 @@
     }
 
     /* ============================================================
-       CAPA 1: PORTADA ULTRA MINIMAL (HOME DE INICIO)
+       CAPA 1: HOME CON VIDEO DE FONDO BANNER.MP4 TIPO GIF
        ============================================================ */
     .home-layer {
+      position: relative;
       min-height: 100vh;
+      width: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       padding: 40px 24px;
-      background: var(--bg-white);
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* Video de fondo en loop estilo GIF */
+    .video-background {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      opacity: 0.45; /* Opacidad del video */
+      pointer-events: none;
+    }
+
+    /* Capa de velo translúcido para mantener el estilo minimalista blanco */
+    .video-overlay-tint {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.78); /* Filtro blanco minimalista */
+      backdrop-filter: blur(2px);
+      z-index: 2;
+    }
+
+    .home-content {
+      position: relative;
+      z-index: 3;
+      max-width: 800px;
     }
 
     .logo-hero {
-      height: 70px;
+      height: 76px;
       width: auto;
       object-fit: contain;
-      margin-bottom: 30px;
+      margin-bottom: 24px;
     }
 
     .home-title {
@@ -151,10 +187,10 @@
 
     .home-tagline {
       font-size: 1.15rem;
-      color: var(--text-muted);
+      color: var(--text-soft);
       max-width: 620px;
-      margin: 0 auto 40px;
-      font-weight: 400;
+      margin: 0 auto 36px;
+      font-weight: 500;
     }
 
     /* Los 3 Botones Principales */
@@ -163,7 +199,7 @@
       flex-direction: column;
       gap: 14px;
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
       margin: 0 auto;
     }
 
@@ -202,7 +238,7 @@
     }
 
     .btn-aliado {
-      background: var(--bg-white);
+      background: #ffffff;
       color: var(--text-main);
       border-color: var(--border-dark);
     }
@@ -223,7 +259,7 @@
     }
 
     /* ============================================================
-       CAPA 2 & 3: VISTAS INTERNAS (OCULTAS POR DEFECTO)
+       CAPA 2 & 3: VISTAS INTERNAS
        ============================================================ */
     .view-screen {
       display: none;
@@ -264,7 +300,6 @@
       padding: 32px;
     }
 
-    /* Formularios */
     .form-label {
       display: block;
       font-size: 0.8rem;
@@ -305,7 +340,6 @@
       }
     }
 
-    /* Rutas y Estados en Capa Institucional */
     .routes-tabs {
       display: flex;
       gap: 8px;
@@ -502,30 +536,42 @@
   <div id="app-content">
 
     <!-- ============================================================
-         CAPA 1: HOME MINIMALISTA CON LOS 3 BOTONES
+         CAPA 1: HOME MINIMALISTA CON VIDEO BANNER.MP4 DE FONDO
          ============================================================ -->
     <section class="home-layer" id="layerHome">
-      <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" alt="Destinos Ven" class="logo-hero">
-      <h1 class="home-title">DESTINOS VEN: <span>EL LATIDO DE VENEZUELA</span></h1>
-      <p class="home-tagline">
-        Ruta audiovisual de estándar cinematográfico por 16 estados. Descubriendo dónde despertar, qué saborear, los íconos turísticos y la industria tecnificada del país.
-      </p>
+      <!-- Video de fondo tipo GIF (sin sonido, loop infinito) -->
+      <video class="video-background" autoplay loop muted playsinline>
+        <source src="banner.mp4" type="video/mp4">
+        Tu navegador no soporta video HTML5.
+      </video>
 
-      <div class="home-buttons">
-        <!-- BOTÓN 1: Reproduce video directo -->
-        <button class="btn btn-promo" onclick="playPromo(null)">
-          <i class="fa-solid fa-circle-play"></i> Ver Video Promocional
-        </button>
+      <!-- Velo de opacidad minimalista -->
+      <div class="video-overlay-tint"></div>
 
-        <!-- BOTÓN 2: Reproduce video y lleva a postulación de empresas/restaurantes -->
-        <button class="btn btn-aliado" onclick="playPromo('layerAliados')">
-          <i class="fa-solid fa-utensils"></i> Postular Empresa o Restaurante
-        </button>
+      <!-- Contenido frontal -->
+      <div class="home-content">
+        <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" alt="Destinos Ven" class="logo-hero">
+        <h1 class="home-title">DESTINOS VEN: <span>EL LATIDO DE VENEZUELA</span></h1>
+        <p class="home-tagline">
+          Ruta audiovisual de estándar cinematográfico por 16 estados. Descubriendo dónde despertar, qué saborear, los íconos turísticos y la industria tecnificada del país.
+        </p>
 
-        <!-- BOTÓN 3: Reproduce video y solicita clave para entrar a la información total -->
-        <button class="btn btn-institucional" onclick="playPromo('authModal')">
-          <i class="fa-solid fa-landmark"></i> Acceso Direcciones de Turismo
-        </button>
+        <div class="home-buttons">
+          <!-- BOTÓN 1: Reproduce video directo -->
+          <button class="btn btn-promo" onclick="playPromo(null)">
+            <i class="fa-solid fa-circle-play"></i> Ver Video Promocional
+          </button>
+
+          <!-- BOTÓN 2: Reproduce video y lleva a postulación de aliados -->
+          <button class="btn btn-aliado" onclick="playPromo('layerAliados')">
+            <i class="fa-solid fa-utensils"></i> Postular Empresa o Restaurante
+          </button>
+
+          <!-- BOTÓN 3: Reproduce video y solicita clave institucional -->
+          <button class="btn btn-institucional" onclick="playPromo('authModal')">
+            <i class="fa-solid fa-landmark"></i> Acceso Direcciones de Turismo
+          </button>
+        </div>
       </div>
     </section>
 
