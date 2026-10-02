@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,26 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>DESTINOS VEN | El latido de Venezuela</title>
 
-  <!-- ============================================================
-       ETIQUETAS OPEN GRAPH PARA VISTA PREVIA EN WHATSAPP Y REDES
-       ============================================================ -->
+  <!-- Open Graph -->
   <meta name="title" content="DESTINOS VEN | El latido de Venezuela">
-  <meta name="description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Hospedaje, gastronomía emblemática, centros comerciales, espacios públicos e industria tecnificada.">
-
+  <meta name="description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Destinos Ven">
   <meta property="og:title" content="DESTINOS VEN | El latido de Venezuela">
-  <meta property="og:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Hospedaje, gastronomía emblemática, espacios públicos e industria tecnificada.">
+  <meta property="og:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela.">
   <meta property="og:image" content="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
   <meta property="og:image:secure_url" content="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DESTINOS VEN | El latido de Venezuela">
-  <meta name="twitter:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela.">
-  <meta name="twitter:image" content="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
 
   <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
   <link rel="apple-touch-icon" href="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
@@ -77,9 +68,7 @@
       overflow-x: hidden;
     }
 
-    /* ============================================================
-       CAPA 0: BLOQUEO VERTICAL
-       ============================================================ */
+    /* CAPA 0: BLOQUEO VERTICAL */
     #landscape-lock {
       display: none;
       position: fixed;
@@ -113,7 +102,6 @@
       font-family: var(--font-title);
       font-size: 1.6rem;
       margin-bottom: 8px;
-      letter-spacing: -0.5px;
     }
 
     #landscape-lock p {
@@ -140,9 +128,7 @@
       padding-right: max(20px, env(safe-area-inset-right));
     }
 
-    /* ============================================================
-       CAPA 1: PORTADA HORIZONTAL OPTIMIZADA
-       ============================================================ */
+    /* CAPA 1: PORTADA */
     .home-layer {
       position: relative;
       width: 100%;
@@ -310,9 +296,7 @@
       background: var(--blue-hover);
     }
 
-    /* ============================================================
-       CAPAS INTERNAS: FORMULARIOS Y VISOR DE ADMINISTRADOR
-       ============================================================ */
+    /* VISTAS INTERNAS */
     .view-screen {
       display: none;
       min-height: 100dvh;
@@ -382,6 +366,12 @@
       gap: 12px;
     }
 
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
     .routes-tabs {
       display: flex;
       gap: 6px;
@@ -407,7 +397,7 @@
 
     .states-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 12px;
       margin-bottom: 24px;
     }
@@ -416,13 +406,38 @@
       background: #ffffff;
       border: 1px solid var(--border-light);
       border-radius: 6px;
-      padding: 12px 16px;
+      padding: 12px 14px;
       cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
     }
 
     .state-item-card.active {
       border-color: var(--blue-brand);
       background: #ebf3ff;
+    }
+
+    .btn-review-state {
+      background: #ffffff;
+      border: 1px solid var(--blue-brand);
+      color: var(--blue-brand);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-review-state:hover {
+      background: var(--blue-brand);
+      color: #ffffff;
     }
 
     .day-selector-nav {
@@ -476,19 +491,12 @@
       align-items: center;
       justify-content: center;
       z-index: 10000;
-      padding: max(16px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+      padding: 16px;
     }
 
     .video-box {
       width: 100%;
       max-width: 800px;
-    }
-
-    .video-modal-bar {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      margin-bottom: 8px;
     }
 
     .video-wrap {
@@ -517,7 +525,7 @@
       cursor: pointer;
     }
 
-    /* Modales de Clave */
+    /* Modales de Clave y Revisión */
     .auth-overlay {
       position: fixed;
       inset: 0;
@@ -535,7 +543,19 @@
       border-radius: 8px;
       padding: 24px;
       width: 100%;
-      max-width: 380px;
+      max-width: 420px;
+      position: relative;
+    }
+
+    .modal-fullscreen-box {
+      background: #ffffff;
+      color: var(--text-dark);
+      border-radius: 8px;
+      padding: 24px;
+      width: 100%;
+      max-width: 860px;
+      max-height: 90vh;
+      overflow-y: auto;
       position: relative;
     }
 
@@ -553,7 +573,6 @@
       z-index: 12000;
     }
 
-    /* Visor Consolidado Admin */
     .admin-report-view {
       background: #ffffff;
       border: 1px solid var(--border-light);
@@ -565,6 +584,15 @@
       white-space: pre-wrap;
       max-height: 480px;
       overflow-y: auto;
+    }
+
+    /* Caja de identificación del funcionario */
+    .officer-card {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 18px;
     }
   </style>
 </head>
@@ -621,7 +649,7 @@
       </div>
     </section>
 
-    <!-- CAPA 2: POSTULACIÓN ALIADOS (RESTAURANTES, HOTELES, AGRO) -->
+    <!-- CAPA 2: POSTULACIÓN ALIADOS -->
     <section class="view-screen" id="layerAliados">
       <div class="container" style="max-width: 680px;">
         <div class="top-bar-nav">
@@ -702,7 +730,7 @@
       </div>
     </section>
 
-    <!-- CAPA 3: INSTITUCIONAL (DIRECTORES DE TURISMO) -->
+    <!-- CAPA 3: INSTITUCIONAL -->
     <section class="view-screen" id="layerInstitucional">
       <div class="container">
         <div class="top-bar-nav">
@@ -721,6 +749,7 @@
           <button class="route-btn" onclick="switchRouteTab('oriente')">Oriente</button>
         </div>
 
+        <!-- Estados con botón de revisar cada uno -->
         <div class="states-grid" id="statesContainer"></div>
 
         <div class="card-clean">
@@ -729,17 +758,48 @@
               <span style="font-size: 0.75rem; font-weight: 700; color: var(--blue-brand);" id="activeStateLabel">TÁCHIRA</span>
               <h3 style="font-family: var(--font-title); font-size: 1.3rem;" id="activeDayTitle">HOJA DE RUTA: DÍA 1</h3>
             </div>
-            <button class="btn btn-institucional" onclick="saveDayPlan()">
-              <i class="fa-solid fa-floppy-disk"></i> Guardar Jornada y Enviar Reporte
-            </button>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-review-state" onclick="inspectStatePlan(activeState)">
+                <i class="fa-solid fa-eye"></i> Revisar Toda la Información de ${activeState}
+              </button>
+              <button class="btn btn-institucional" onclick="saveDayPlan()">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar y Enviar
+              </button>
+            </div>
           </div>
 
+          <!-- Selector de Día -->
           <div class="day-selector-nav">
             <button class="day-tag-btn active" onclick="setDay(1)">Día 1</button>
             <button class="day-tag-btn" onclick="setDay(2)">Día 2</button>
             <button class="day-tag-btn" onclick="setDay(3)">Día 3</button>
             <button class="day-tag-btn" onclick="setDay(4)">Día 4</button>
             <button class="day-tag-btn" onclick="setDay(5)">Día 5</button>
+          </div>
+
+          <!-- DATOS DE QUIEN REGISTRA (RESPONSABLE DEL LLENADO) -->
+          <div class="officer-card">
+            <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.85rem; margin-bottom: 8px;">
+              <i class="fa-solid fa-user-check"></i> Datos del Responsable del Llenado (Institución)
+            </div>
+            <div class="grid-4">
+              <div>
+                <label class="form-label">Nombre del Funcionario</label>
+                <input type="text" class="form-input" id="officer_name" required placeholder="Nombre completo">
+              </div>
+              <div>
+                <label class="form-label">Institución que Representa</label>
+                <input type="text" class="form-input" id="officer_inst" required placeholder="Cormetur / Cotatur / Inatur">
+              </div>
+              <div>
+                <label class="form-label">Correo Oficial</label>
+                <input type="email" class="form-input" id="officer_email" required placeholder="ejemplo@gmail.com">
+              </div>
+              <div>
+                <label class="form-label">Teléfono / WhatsApp</label>
+                <input type="tel" class="form-input" id="officer_phone" required placeholder="+58 414 ...">
+              </div>
+            </div>
           </div>
 
           <!-- Módulos Fijos -->
@@ -773,7 +833,7 @@
             </div>
           </div>
 
-          <!-- Atractivos Turísticos Abiertos -->
+          <!-- Atractivos -->
           <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem;"><i class="fa-solid fa-mountain-sun"></i> 5. Atractivos e Íconos Turísticos del Día</div>
@@ -784,7 +844,7 @@
             <div id="attractionsList"></div>
           </div>
 
-          <!-- NUEVO MÓDULO SOLICITADO: CENTROS COMERCIALES Y ESPACIOS PÚBLICOS -->
+          <!-- Centros Comerciales y Espacios Públicos -->
           <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem;"><i class="fa-solid fa-city"></i> 6. Centros Comerciales & Espacios Públicos (Nombre y Nota)</div>
@@ -799,7 +859,7 @@
       </div>
     </section>
 
-    <!-- CAPA 4: PANEL CONSOLIDADO DE ADMINISTRADOR (VER Y VERIFICAR) -->
+    <!-- CAPA 4: ADMIN MASTER -->
     <section class="view-screen" id="layerAdmin">
       <div class="container">
         <div class="top-bar-nav">
@@ -814,22 +874,36 @@
         <div class="card-clean" style="margin-bottom: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
             <div>
-              <h2 style="font-family: var(--font-title); font-size: 1.6rem; color: var(--blue-brand);">Verificación de Jornadas Recopiladas</h2>
-              <p style="color: #64748b; font-size: 0.85rem;">Consulta en tiempo real la información enviada por los estados y restaurantes.</p>
+              <h2 style="font-family: var(--font-title); font-size: 1.6rem; color: var(--blue-brand);">Verificación Consolidada de Producción</h2>
+              <p style="color: #64748b; font-size: 0.85rem;">Consulta en tiempo real la información recopilada por estado.</p>
             </div>
             <div style="display: flex; gap: 8px;">
               <button class="btn btn-aliado" onclick="copyReportText()"><i class="fa-solid fa-copy"></i> Copiar Reporte</button>
-              <button class="btn btn-institucional" onclick="exportDataJSON()"><i class="fa-solid fa-download"></i> Descargar Base JSON</button>
+              <button class="btn btn-institucional" onclick="exportDataJSON()"><i class="fa-solid fa-download"></i> Descargar JSON</button>
             </div>
           </div>
 
           <div class="admin-report-view" id="adminReportBox">
-            Cargando base de datos consolidada...
+            Cargando datos...
           </div>
         </div>
       </div>
     </section>
 
+  </div>
+
+  <!-- MODAL DE REVISIÓN INDIVIDUAL POR ESTADO -->
+  <div class="auth-overlay" id="modalStateInspection">
+    <div class="modal-fullscreen-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-light); padding-bottom: 12px;">
+        <h3 style="font-family: var(--font-title); font-size: 1.4rem; color: var(--blue-brand);" id="inspectModalTitle">REPORTE DETALLADO</h3>
+        <button class="close-video" style="color: #64748b;" onclick="closeInspectionModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="inspectModalBody" style="line-height: 1.6; font-size: 0.9rem;"></div>
+      <div style="text-align: right; margin-top: 20px;">
+        <button class="btn btn-institucional" onclick="closeInspectionModal()">Cerrar Vista</button>
+      </div>
+    </div>
   </div>
 
   <!-- MODAL VIDEO -->
@@ -858,7 +932,7 @@
     </div>
   </div>
 
-  <!-- MODAL CLAVE ADMINISTRADOR -->
+  <!-- MODAL CLAVE ADMIN -->
   <div class="auth-overlay" id="adminAuthModal">
     <div class="auth-box">
       <button class="close-video" style="color: #64748b; position: absolute; top: 10px; right: 10px;" onclick="closeAdminModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -877,7 +951,7 @@
   <script>
     const YOUTUBE_ID = "4NjxVjp5zCc";
 
-    /* TU ENDPOINT OFICIAL DE FORMSPREE CONECTADO DIRECTO A TU GMAIL */
+    /* ENDPOINT DE FORMSPREE CONECTADO DIRECTO A TU GMAIL */
     const GMAIL_ENDPOINT = "https://formspree.io/f/xzezlwbg";
 
     const routes = {
@@ -893,6 +967,7 @@
 
     let productionDb = JSON.parse(localStorage.getItem('destinos_ven_db')) || {
       "Táchira": {
+        officer: { name: "Jesús Chacón", inst: "Cotatur / Producción", email: "produccion@destinosven.com", phone: "+58 414 7000000" },
         days: {
           1: {
             hotel: { name: "Posada Turística Cordero", breakfast: "Pisca Andina y Arepas", contact: "Jesús Chacón" },
@@ -900,7 +975,7 @@
             lunch: { name: "Fogón de la Sierra", dish: "Trucha ahumada" },
             dinner: { name: "Mirador Las Cumbres", dish: "Coctelería de autor" },
             attractions: [{ name: "Páramo El Zumbador", light: "Amanecer (06:30)" }],
-            publicSpaces: [{ name: "Plaza Bolívar de Cordero", note: "Tomas abiertas de arquitectura típica y ambiente local" }]
+            publicSpaces: [{ name: "Plaza Bolívar de Cordero", note: "Tomas abiertas de arquitectura típica" }]
           }
         }
       }
@@ -963,11 +1038,10 @@
         loadDayData();
         showToast("Acceso validado para Instituciones");
       } else {
-        alert("Clave incorrecta. Use: DESTINOSVEN2026");
+        alert("Clave incorrecta: DESTINOSVEN2026");
       }
     }
 
-    /* Modal Administrador */
     function openAdminModal() {
       document.getElementById('adminAuthModal').style.display = 'flex';
     }
@@ -981,9 +1055,9 @@
       if (key === 'ADMINVEN2026') {
         closeAdminModal();
         showLayer('layerAdmin');
-        showToast("Panel Maestro de Administrador desbloqueado");
+        showToast("Panel Maestro de Producción Desbloqueado");
       } else {
-        alert("Clave de Administrador incorrecta. Use: ADMINVEN2026");
+        alert("Clave incorrecta: ADMINVEN2026");
       }
     }
 
@@ -995,21 +1069,30 @@
       renderStatesList();
     }
 
+    /* Renderizado de estados con botón individual de revisión */
     function renderStatesList() {
       const container = document.getElementById('statesContainer');
       container.innerHTML = '';
       routes[activeRoute].states.forEach(st => {
         const item = document.createElement('div');
         item.className = `state-item-card ${st === activeState ? 'active' : ''}`;
+        
+        item.innerHTML = `
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem;">${st}</div>
+            <div style="font-size: 0.75rem; color: #64748b;">5 días de rodaje</div>
+          </div>
+          <button class="btn-review-state" onclick="event.stopPropagation(); inspectStatePlan('${st}')">
+            <i class="fa-solid fa-list-check"></i> Revisar Estado
+          </button>
+        `;
+
         item.onclick = () => {
           activeState = st;
           renderStatesList();
           loadDayData();
         };
-        item.innerHTML = `
-          <div style="font-weight: 700; font-size: 0.95rem;">${st}</div>
-          <div style="font-size: 0.75rem; color: #64748b;">5 días de rodaje</div>
-        `;
+
         container.appendChild(item);
       });
       loadDayData();
@@ -1029,6 +1112,14 @@
 
       const stateData = productionDb[activeState];
       const d = (stateData && stateData.days && stateData.days[activeDay]) ? stateData.days[activeDay] : null;
+
+      // Cargar datos de quien llena si existen
+      if (stateData && stateData.officer) {
+        document.getElementById('officer_name').value = stateData.officer.name || '';
+        document.getElementById('officer_inst').value = stateData.officer.inst || '';
+        document.getElementById('officer_email').value = stateData.officer.email || '';
+        document.getElementById('officer_phone').value = stateData.officer.phone || '';
+      }
 
       document.getElementById('hotel_name').value = d ? (d.hotel.name || '') : '';
       document.getElementById('hotel_breakfast').value = d ? (d.hotel.breakfast || '') : '';
@@ -1085,19 +1176,35 @@
         <button class="btn-trash" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
         <div class="grid-2">
           <input type="text" class="form-input pub-name" value="${data.name}" placeholder="Nombre del Centro Comercial o Espacio Público">
-          <input type="text" class="form-input pub-note" value="${data.note}" placeholder="Descripción o nota (Ej: Paseo peatonal, arquitectura moderna)">
+          <input type="text" class="form-input pub-note" value="${data.note}" placeholder="Descripción o nota (Ej: Arquitectura moderna, paseo peatonal)">
         </div>
       `;
       box.appendChild(div);
     }
 
-    /* GUARDAR JORNADA Y ENVIAR AUTOMÁTICAMENTE AL CORREO GMAIL */
+    /* GUARDAR JORNADA CON DATOS DEL FUNCIONARIO Y ENVIAR AL CORREO */
     function saveDayPlan() {
-      if (!productionDb[activeState]) {
-        productionDb[activeState] = { days: {} };
+      const offName = document.getElementById('officer_name').value.trim();
+      const offInst = document.getElementById('officer_inst').value.trim();
+      const offEmail = document.getElementById('officer_email').value.trim();
+      const offPhone = document.getElementById('officer_phone').value.trim();
+
+      if (!offName || !offInst || !offEmail) {
+        alert("Por favor completa los datos de identificación del funcionario (Nombre, Institución y Correo) antes de enviar.");
+        return;
       }
 
-      // Recopilar Atractivos
+      if (!productionDb[activeState]) {
+        productionDb[activeState] = { officer: {}, days: {} };
+      }
+
+      productionDb[activeState].officer = {
+        name: offName,
+        inst: offInst,
+        email: offEmail,
+        phone: offPhone
+      };
+
       const attEls = document.querySelectorAll('#attractionsList .clean-box-item');
       const atts = [];
       attEls.forEach(el => {
@@ -1106,7 +1213,6 @@
         if (name) atts.push({ name, light });
       });
 
-      // Recopilar Espacios Públicos y CC
       const pubEls = document.querySelectorAll('#publicSpacesList .clean-box-item');
       const pubs = [];
       pubEls.forEach(el => {
@@ -1141,33 +1247,25 @@
       productionDb[activeState].days[activeDay] = dayPayload;
       localStorage.setItem('destinos_ven_db', JSON.stringify(productionDb));
 
-      // Preparar informe para enviar al Gmail
       const emailReport = `
 ========================================
-NUEVA JORNADA INSTITUCIONAL - DESTINOS VEN
+HOJA DE RUTA INSTITUCIONAL - DESTINOS VEN
 ========================================
-ESTADO: ${activeState.toUpperCase()}
-JORNADA: DÍA ${activeDay}
+ESTADO: ${activeState.toUpperCase()} | DÍA ${activeDay}
+RESPONSABLE: ${offName} (${offInst})
+CORREO: ${offEmail} | TELF: ${offPhone}
 
-1. HOSPEDAJE & DESAYUNO:
-- Hotel/Posada: ${dayPayload.hotel.name}
+1. HOSPEDAJE: ${dayPayload.hotel.name}
 - Desayuno: ${dayPayload.hotel.breakfast}
 - Contacto: ${dayPayload.hotel.contact}
 
-2. EJE PRODUCTIVO:
-- Empresa: ${dayPayload.industry.name}
-- Nivel Tecnológico: ${dayPayload.industry.tech}
+2. INDUSTRIA/AGRO: ${dayPayload.industry.name} (${dayPayload.industry.tech})
 - Contacto: ${dayPayload.industry.contact}
 
-3. ALMUERZO:
-- Restaurante: ${dayPayload.lunch.name}
-- Plato: ${dayPayload.lunch.dish}
+3. ALMUERZO: ${dayPayload.lunch.name} - Plato: ${dayPayload.lunch.dish}
+4. CENA: ${dayPayload.dinner.name} - Menú: ${dayPayload.dinner.dish}
 
-4. CENA:
-- Restaurante: ${dayPayload.dinner.name}
-- Menú/Concepto: ${dayPayload.dinner.dish}
-
-5. ATRACTIVOS E ÍCONOS TURÍSTICOS:
+5. ATRACTIVOS E ÍCONOS:
 ${atts.map((a, i) => `   ${i+1}. ${a.name} (${a.light})`).join('\n') || '   Ninguno'}
 
 6. CENTROS COMERCIALES Y ESPACIOS PÚBLICOS:
@@ -1175,11 +1273,10 @@ ${pubs.map((p, i) => `   ${i+1}. ${p.name} - Nota:${p.note}`).join('\n') || '   
 ========================================
 `;
 
-      sendToGmail(`Jornada Día ${activeDay} - ${activeState}`, emailReport);
-      showToast(`Día ${activeDay} de ${activeState} guardado y enviado a tu Gmail.`);
+      sendToGmail(`Jornada Día ${activeDay} - ${activeState} [${offInst}]`, emailReport);
+      showToast(`Jornada guardada y enviada a tu Gmail.`);
     }
 
-    /* ENVIAR POSTULACIÓN DE ALIADOS Y AL CORREO */
     function handleAliadoSubmit(e) {
       e.preventDefault();
       const aliado = {
@@ -1199,23 +1296,22 @@ ${pubs.map((p, i) => `   ${i+1}. ${p.name} - Nota:${p.note}`).join('\n') || '   
 ========================================
 POSTULACIÓN DE ALIADO - DESTINOS VEN
 ========================================
-Nombre Comercial: ${aliado.nombre}
+Nombre: ${aliado.nombre}
 Estado: ${aliado.estado}
 Categoría: ${aliado.categoria}
-Teléfono/WhatsApp: ${aliado.telefono}
-Instagram/Web: ${aliado.social}
-Propuesta de Valor: ${aliado.descripcion}
+Teléfono: ${aliado.telefono}
+Redes: ${aliado.social}
+Propuesta: ${aliado.descripcion}
 Fecha: ${aliado.fecha}
 ========================================
 `;
 
-      sendToGmail(`Nueva Postulación: ${aliado.nombre} (${aliado.estado})`, emailText);
+      sendToGmail(`Postulación: ${aliado.nombre} (${aliado.estado})`, emailText);
       showToast("Postulación registrada y enviada a tu Gmail.");
       e.target.reset();
       setTimeout(() => showLayer('layerHome'), 1500);
     }
 
-    /* DISPATCHER UNIVERSAL A GMAIL */
     function sendToGmail(asunto, cuerpo) {
       fetch(GMAIL_ENDPOINT, {
         method: "POST",
@@ -1224,42 +1320,100 @@ Fecha: ${aliado.fecha}
           subject: `[Destinos Ven] ${asunto}`,
           message: cuerpo
         })
-      }).catch(err => console.log("Guardado local garantizado.", err));
+      }).catch(err => console.log("Guardado local.", err));
     }
 
-    /* RENDERIZADOR DEL VISOR CONSOLIDADO PARA ADMINISTRADOR */
+    /* REVISAR EN PANTALLA TODA LA INFORMACIÓN DE UN ESTADO */
+    function inspectStatePlan(stateName) {
+      const modal = document.getElementById('modalStateInspection');
+      const title = document.getElementById('inspectModalTitle');
+      const body = document.getElementById('inspectModalBody');
+
+      title.innerHTML = `<i class="fa-solid fa-map-location-dot"></i> EXPEDIENTE DE RODAJE: ${stateName.toUpperCase()}`;
+
+      const data = productionDb[stateName];
+      if (!data || !data.days || Object.keys(data.days).length === 0) {
+        body.innerHTML = `
+          <div style="text-align: center; padding: 40px; color: #64748b;">
+            <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+            Aún no se ha registrado información de los 5 días para <b>${stateName}</b>.
+          </div>
+        `;
+        modal.style.display = 'flex';
+        return;
+      }
+
+      let html = '';
+      if (data.officer && data.officer.name) {
+        html += `
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+            <b><i class="fa-solid fa-id-card"></i> Responsable del llenado:</b> ${data.officer.name} (${data.officer.inst || 'Institución sin indicar'})<br>
+            <b>Contacto:</b> ${data.officer.email || 'N/A'} | ${data.officer.phone || 'N/A'}
+          </div>
+        `;
+      }
+
+      for (let day = 1; day <= 5; day++) {
+        const d = data.days[day];
+        if (d) {
+          html += `
+            <div style="border-bottom: 1px solid var(--border-light); padding: 12px 0; margin-bottom: 8px;">
+              <span style="background: var(--blue-brand); color: #fff; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">DÍA ${day}</span>
+              <div class="grid-2" style="margin-top: 8px;">
+                <div>
+                  <p><b>🏨 Hotel:</b> ${d.hotel.name || 'Sin asignar'} (${d.hotel.breakfast || 'Desayuno por definir'})</p>
+                  <p><b>🍽️ Almuerzo:</b> ${d.lunch.name || 'Sin asignar'} (${d.lunch.dish || ''})</p>
+                  <p><b>🍸 Cena:</b> ${d.dinner.name || 'Sin asignar'} (${d.dinner.dish || ''})</p>
+                </div>
+                <div>
+                  <p><b>🏭 Empresa/Agro:</b> ${d.industry.name || 'Sin asignar'} (${d.industry.tech || ''})</p>
+                  <p><b>🌄 Atractivos:</b> ${d.attractions && d.attractions.length > 0 ? d.attractions.map(a => a.name + (a.light ? ' - ' + a.light : '')).join('; ') : 'Ninguno'}</p>
+                  <p><b>🏬 Espacios Públicos y CC:</b> ${d.publicSpaces && d.publicSpaces.length > 0 ? d.publicSpaces.map(p => p.name + (p.note ? ' (' + p.note + ')' : '')).join('; ') : 'Ninguno'}</p>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      body.innerHTML = html;
+      modal.style.display = 'flex';
+    }
+
+    function closeInspectionModal() {
+      document.getElementById('modalStateInspection').style.display = 'none';
+    }
+
+    /* REPORTE CONSOLIDADO ADMIN */
     function renderAdminConsolidatedReport() {
       const box = document.getElementById('adminReportBox');
       let text = "======================================================\n";
       text += "   BASE DE DATOS MAESTRA - DESTINOS VEN (2026)\n";
       text += "======================================================\n\n";
 
-      text += ">>> 1. PLANES ESTADALES REGISTRADOS:\n";
       for (const st in productionDb) {
-        text += `\n------------------------------------------------------\nESTADO: ${st.toUpperCase()}\n------------------------------------------------------\n`;
+        text += `\nESTADO: ${st.toUpperCase()}\n`;
+        const off = productionDb[st].officer;
+        if (off) {
+          text += `Responsable: ${off.name} (${off.inst}) | Tel: ${off.phone} | Email: ${off.email}\n`;
+        }
         const days = productionDb[st].days || {};
         for (const d in days) {
           const item = days[d];
-          text += `\n[DÍA ${d}]\n`;
-          text += `* Hotel: ${item.hotel.name || 'N/A'} | Desayuno: ${item.hotel.breakfast || 'N/A'}\n`;
-          text += `* Empresa: ${item.industry.name || 'N/A'} (${item.industry.tech || ''})\n`;
-          text += `* Almuerzo: ${item.lunch.name || 'N/A'} (${item.lunch.dish || ''})\n`;
-          text += `* Cena: ${item.dinner.name || 'N/A'} (${item.dinner.dish || ''})\n`;
-          text += `* Atractivos: ${item.attractions ? item.attractions.map(a => a.name).join(', ') : 'Ninguno'}\n`;
-          text += `* Espacios Públicos y CC: ${item.publicSpaces ? item.publicSpaces.map(p => `${p.name} (${p.note})`).join('; ') : 'Ninguno'}\n`;
+          text += `\n  [DÍA ${d}]\n`;
+          text += `  * Hotel: ${item.hotel.name} | Desayuno: ${item.hotel.breakfast}\n`;
+          text += `  * Empresa: ${item.industry.name} (${item.industry.tech})\n`;
+          text += `  * Almuerzo: ${item.lunch.name} (${item.lunch.dish})\n`;
+          text += `  * Cena: ${item.dinner.name} (${item.dinner.dish})\n`;
+          text += `  * Atractivos: ${item.attractions ? item.attractions.map(a => a.name).join(', ') : 'Ninguno'}\n`;
+          text += `  * Espacios Públicos y CC: ${item.publicSpaces ? item.publicSpaces.map(p => `${p.name} (${p.note})`).join('; ') : 'Ninguno'}\n`;
         }
       }
 
-      text += "\n\n>>> 2. POSTULACIONES DE EMPRESAS Y RESTAURANTES:\n";
-      if (externalSubmissions.length === 0) {
-        text += "No hay postulaciones externas pendientes.\n";
-      } else {
-        externalSubmissions.forEach((sub, i) => {
-          text += `\n[${i+1}] ${sub.nombre} | ${sub.estado} (${sub.categoria})\n`;
-          text += `    Tel: ${sub.telefono} | Redes: ${sub.social}\n`;
-          text += `    Nota: ${sub.descripcion}\n`;
-        });
-      }
+      text += "\n\n>>> POSTULACIONES DE RESTAURANTES Y EMPRESAS:\n";
+      externalSubmissions.forEach((sub, i) => {
+        text += `\n[${i+1}] ${sub.nombre} | ${sub.estado} (${sub.categoria}) - Tel: ${sub.telefono} - Redes: ${sub.social}\n`;
+      });
 
       box.innerText = text;
     }
@@ -1291,5 +1445,3 @@ Fecha: ${aliado.fecha}
   </script>
 </body>
 </html>
-
-```
