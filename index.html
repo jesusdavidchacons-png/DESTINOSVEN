@@ -5,18 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>DESTINOS VEN | El latido de Venezuela</title>
 
-  <!-- Open Graph -->
+  <!-- ============================================================
+       ETIQUETAS OPEN GRAPH PARA VISTA PREVIA EN WHATSAPP Y REDES
+       ============================================================ -->
   <meta name="title" content="DESTINOS VEN | El latido de Venezuela">
-  <meta name="description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela.">
+  <meta name="description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Hospedaje, gastronomía emblemática, centros comerciales, espacios públicos e industria tecnificada.">
+
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Destinos Ven">
   <meta property="og:title" content="DESTINOS VEN | El latido de Venezuela">
-  <meta property="og:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela.">
+  <meta property="og:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Hospedaje, gastronomía emblemática, espacios públicos e industria tecnificada.">
   <meta property="og:image" content="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
   <meta property="og:image:secure_url" content="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DESTINOS VEN | El latido de Venezuela">
+  <meta name="twitter:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela.">
+  <meta name="twitter:image" content="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
 
   <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
   <link rel="apple-touch-icon" href="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
@@ -586,7 +594,6 @@
       overflow-y: auto;
     }
 
-    /* Caja de identificación del funcionario */
     .officer-card {
       background: #eff6ff;
       border: 1px solid #bfdbfe;
@@ -618,7 +625,8 @@
       <div class="video-overlay-tint"></div>
 
       <div class="top-actions-bar">
-        <button class="top-btn" onclick="openAdminModal()">
+        <!-- Acceso directo al visor de administración sin clave previa -->
+        <button class="top-btn" onclick="showLayer('layerAdmin')">
           <i class="fa-solid fa-user-shield"></i>
           <span>Admin</span>
         </button>
@@ -639,10 +647,12 @@
           <button class="btn btn-promo" onclick="openPromoModal()">
             <i class="fa-solid fa-circle-play"></i> Video Promocional
           </button>
+          <!-- Acceso directo a postulación -->
           <button class="btn btn-aliado" onclick="showLayer('layerAliados')">
             <i class="fa-solid fa-utensils"></i> Postular Empresa / Restaurante
           </button>
-          <button class="btn btn-institucional" onclick="openAuthModal()">
+          <!-- Acceso directo a direcciones de turismo sin clave -->
+          <button class="btn btn-institucional" onclick="showLayer('layerInstitucional')">
             <i class="fa-solid fa-landmark"></i> Direcciones de Turismo
           </button>
         </div>
@@ -749,7 +759,7 @@
           <button class="route-btn" onclick="switchRouteTab('oriente')">Oriente</button>
         </div>
 
-        <!-- Estados con botón de revisar cada uno -->
+        <!-- Estados con botón de revisar cada uno (protegido por clave) -->
         <div class="states-grid" id="statesContainer"></div>
 
         <div class="card-clean">
@@ -759,8 +769,9 @@
               <h3 style="font-family: var(--font-title); font-size: 1.3rem;" id="activeDayTitle">HOJA DE RUTA: DÍA 1</h3>
             </div>
             <div style="display: flex; gap: 8px;">
-              <button class="btn-review-state" onclick="inspectStatePlan(activeState)">
-                <i class="fa-solid fa-eye"></i> Revisar Toda la Información de ${activeState}
+              <!-- Botón de revisión protegido por clave -->
+              <button class="btn-review-state" id="btnInspectCurrentState" onclick="requestStateInspection(activeState)">
+                <i class="fa-solid fa-eye"></i> Revisar Toda la Información
               </button>
               <button class="btn btn-institucional" onclick="saveDayPlan()">
                 <i class="fa-solid fa-floppy-disk"></i> Guardar y Enviar
@@ -918,30 +929,17 @@
     </div>
   </div>
 
-  <!-- MODAL CLAVE INSTITUCIONAL -->
-  <div class="auth-overlay" id="authModal">
+  <!-- ÚNICO MODAL DE CLAVE: EXCLUSIVO PARA REVISAR INFORMACIÓN DE ESTADOS -->
+  <div class="auth-overlay" id="stateAuthModal">
     <div class="auth-box">
-      <button class="close-video" style="color: #64748b; position: absolute; top: 10px; right: 10px;" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
-      <span style="font-size: 0.75rem; font-weight: 700; color: var(--blue-brand); text-transform: uppercase;">Acceso Exclusivo</span>
-      <h3 style="font-family: var(--font-title); font-size: 1.3rem; margin: 4px 0 10px;">Direcciones de Turismo</h3>
-      <input type="password" class="form-input" id="authPassword" placeholder="Introduce la clave">
-      <small style="color: #64748b; display: block; margin-top: -6px; margin-bottom: 12px;">Clave: <b>DESTINOSVEN2026</b></small>
-      <button class="btn btn-institucional" style="width: 100%;" onclick="validateAuthKey()">
-        Validar y Entrar
-      </button>
-    </div>
-  </div>
-
-  <!-- MODAL CLAVE ADMIN -->
-  <div class="auth-overlay" id="adminAuthModal">
-    <div class="auth-box">
-      <button class="close-video" style="color: #64748b; position: absolute; top: 10px; right: 10px;" onclick="closeAdminModal()"><i class="fa-solid fa-xmark"></i></button>
-      <span style="font-size: 0.75rem; font-weight: 700; color: var(--yellow-brand); background: #0f172a; padding: 2px 8px; border-radius: 4px; text-transform: uppercase;">Control de Producción</span>
-      <h3 style="font-family: var(--font-title); font-size: 1.3rem; margin: 6px 0 10px;">Clave de Administrador</h3>
-      <input type="password" class="form-input" id="adminPassword" placeholder="Clave maestra">
-      <small style="color: #64748b; display: block; margin-top: -6px; margin-bottom: 12px;">Clave demo: <b>ADMINVEN2026</b></small>
-      <button class="btn btn-institucional" style="width: 100%;" onclick="validateAdminKey()">
-        Entrar al Visor Maestro
+      <button class="close-video" style="color: #64748b; position: absolute; top: 10px; right: 10px;" onclick="closeStateAuthModal()"><i class="fa-solid fa-xmark"></i></button>
+      <span style="font-size: 0.75rem; font-weight: 700; color: var(--blue-brand); text-transform: uppercase;">Validación Requerida</span>
+      <h3 style="font-family: var(--font-title); font-size: 1.3rem; margin: 4px 0 10px;">Revisar Información Alojada</h3>
+      <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 12px;">Ingresa la clave autorizada para consultar los datos del expediente.</p>
+      <input type="password" class="form-input" id="stateAuthPassword" placeholder="Introduce la clave">
+      <small style="color: #64748b; display: block; margin-top: -6px; margin-bottom: 12px;">Clave autorizada: <b>DESTINOSVEN2026</b></small>
+      <button class="btn btn-institucional" style="width: 100%;" onclick="validateStateAuthKey()">
+        Validar y Ver Expediente
       </button>
     </div>
   </div>
@@ -964,6 +962,8 @@
     let activeRoute = 'andes';
     let activeState = 'Táchira';
     let activeDay = 1;
+    let pendingStateToInspect = null;
+    let isStateAuthUnlocked = false;
 
     let productionDb = JSON.parse(localStorage.getItem('destinos_ven_db')) || {
       "Táchira": {
@@ -992,7 +992,7 @@
       if (choice) {
         showLayer('layerAliados');
       } else {
-        openAuthModal();
+        showLayer('layerInstitucional');
       }
     }
 
@@ -1022,42 +1022,32 @@
       modal.style.display = 'none';
     }
 
-    function openAuthModal() {
-      document.getElementById('authModal').style.display = 'flex';
-    }
-
-    function closeAuthModal() {
-      document.getElementById('authModal').style.display = 'none';
-    }
-
-    function validateAuthKey() {
-      const key = document.getElementById('authPassword').value.trim();
-      if (key === 'DESTINOSVEN2026') {
-        closeAuthModal();
-        showLayer('layerInstitucional');
-        loadDayData();
-        showToast("Acceso validado para Instituciones");
+    /* Solicitud de clave ÚNICAMENTE para revisar la información de los estados */
+    function requestStateInspection(stateName) {
+      if (isStateAuthUnlocked) {
+        inspectStatePlan(stateName);
       } else {
-        alert("Clave incorrecta: DESTINOSVEN2026");
+        pendingStateToInspect = stateName;
+        document.getElementById('stateAuthPassword').value = '';
+        document.getElementById('stateAuthModal').style.display = 'flex';
       }
     }
 
-    function openAdminModal() {
-      document.getElementById('adminAuthModal').style.display = 'flex';
+    function closeStateAuthModal() {
+      document.getElementById('stateAuthModal').style.display = 'none';
+      pendingStateToInspect = null;
     }
 
-    function closeAdminModal() {
-      document.getElementById('adminAuthModal').style.display = 'none';
-    }
-
-    function validateAdminKey() {
-      const key = document.getElementById('adminPassword').value.trim();
-      if (key === 'ADMINVEN2026') {
-        closeAdminModal();
-        showLayer('layerAdmin');
-        showToast("Panel Maestro de Producción Desbloqueado");
+    function validateStateAuthKey() {
+      const key = document.getElementById('stateAuthPassword').value.trim();
+      if (key === 'DESTINOSVEN2026') {
+        isStateAuthUnlocked = true;
+        const targetState = pendingStateToInspect || activeState;
+        closeStateAuthModal();
+        showToast("Acceso validado para consultar expediente");
+        inspectStatePlan(targetState);
       } else {
-        alert("Clave incorrecta: ADMINVEN2026");
+        alert("Clave incorrecta. Clave autorizada: DESTINOSVEN2026");
       }
     }
 
@@ -1069,7 +1059,6 @@
       renderStatesList();
     }
 
-    /* Renderizado de estados con botón individual de revisión */
     function renderStatesList() {
       const container = document.getElementById('statesContainer');
       container.innerHTML = '';
@@ -1082,7 +1071,7 @@
             <div style="font-weight: 700; font-size: 0.95rem;">${st}</div>
             <div style="font-size: 0.75rem; color: #64748b;">5 días de rodaje</div>
           </div>
-          <button class="btn-review-state" onclick="event.stopPropagation(); inspectStatePlan('${st}')">
+          <button class="btn-review-state" onclick="event.stopPropagation(); requestStateInspection('${st}')">
             <i class="fa-solid fa-list-check"></i> Revisar Estado
           </button>
         `;
@@ -1109,11 +1098,15 @@
     function loadDayData() {
       document.getElementById('activeStateLabel').innerText = activeState.toUpperCase();
       document.getElementById('activeDayTitle').innerText = `HOJA DE RUTA: DÍA ${activeDay}`;
+      
+      const inspectBtn = document.getElementById('btnInspectCurrentState');
+      if (inspectBtn) {
+        inspectBtn.innerHTML = `<i class="fa-solid fa-eye"></i> Revisar Toda la Información de ${activeState}`;
+      }
 
       const stateData = productionDb[activeState];
       const d = (stateData && stateData.days && stateData.days[activeDay]) ? stateData.days[activeDay] : null;
 
-      // Cargar datos de quien llena si existen
       if (stateData && stateData.officer) {
         document.getElementById('officer_name').value = stateData.officer.name || '';
         document.getElementById('officer_inst').value = stateData.officer.inst || '';
@@ -1135,7 +1128,6 @@
       document.getElementById('dinner_name').value = d ? (d.dinner.name || '') : '';
       document.getElementById('dinner_dish').value = d ? (d.dinner.dish || '') : '';
 
-      // Atractivos
       const containerAtt = document.getElementById('attractionsList');
       containerAtt.innerHTML = '';
       if (d && d.attractions && d.attractions.length > 0) {
@@ -1144,7 +1136,6 @@
         addAttractionField({ name: '', light: '' });
       }
 
-      // Espacios Públicos y CC
       const containerPub = document.getElementById('publicSpacesList');
       containerPub.innerHTML = '';
       if (d && d.publicSpaces && d.publicSpaces.length > 0) {
@@ -1182,7 +1173,6 @@
       box.appendChild(div);
     }
 
-    /* GUARDAR JORNADA CON DATOS DEL FUNCIONARIO Y ENVIAR AL CORREO */
     function saveDayPlan() {
       const offName = document.getElementById('officer_name').value.trim();
       const offInst = document.getElementById('officer_inst').value.trim();
@@ -1323,7 +1313,6 @@ Fecha: ${aliado.fecha}
       }).catch(err => console.log("Guardado local.", err));
     }
 
-    /* REVISAR EN PANTALLA TODA LA INFORMACIÓN DE UN ESTADO */
     function inspectStatePlan(stateName) {
       const modal = document.getElementById('modalStateInspection');
       const title = document.getElementById('inspectModalTitle');
@@ -1384,7 +1373,6 @@ Fecha: ${aliado.fecha}
       document.getElementById('modalStateInspection').style.display = 'none';
     }
 
-    /* REPORTE CONSOLIDADO ADMIN */
     function renderAdminConsolidatedReport() {
       const box = document.getElementById('adminReportBox');
       let text = "======================================================\n";
