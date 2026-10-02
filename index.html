@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,30 +10,27 @@
        ETIQUETAS OPEN GRAPH PARA VISTA PREVIA EN WHATSAPP Y REDES
        ============================================================ -->
   <meta name="title" content="DESTINOS VEN | El latido de Venezuela">
-  <meta name="description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Hospedaje, gastronomía emblemática, atractivos turísticos e industria tecnificada.">
+  <meta name="description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Hospedaje, gastronomía emblemática, centros comerciales, espacios públicos e industria tecnificada.">
 
-  <!-- Open Graph / WhatsApp / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Destinos Ven">
   <meta property="og:title" content="DESTINOS VEN | El latido de Venezuela">
-  <meta property="og:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Hospedaje, gastronomía emblemática, atractivos turísticos e industria tecnificada.">
+  <meta property="og:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela. Hospedaje, gastronomía emblemática, espacios públicos e industria tecnificada.">
   <meta property="og:image" content="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
   <meta property="og:image:secure_url" content="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
-  <!-- Twitter / X Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="DESTINOS VEN | El latido de Venezuela">
   <meta name="twitter:description" content="Ruta audiovisual cinematográfica por 16 estados de Venezuela.">
   <meta name="twitter:image" content="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
 
-  <!-- Favicon para navegadores -->
   <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
   <link rel="apple-touch-icon" href="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
 
-  <!-- Tipografías Minimalistas -->
+  <!-- Tipografías -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -182,18 +180,23 @@
       z-index: 2;
     }
 
-    .top-right-skip {
+    .top-actions-bar {
       position: absolute;
       top: max(14px, env(safe-area-inset-top));
       right: max(16px, env(safe-area-inset-right));
       z-index: 10;
       display: flex;
+      gap: 10px;
+    }
+
+    .top-btn {
+      display: flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(0, 0, 0, 0.7);
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.35);
       color: #ffffff;
-      padding: 7px 16px;
+      padding: 7px 14px;
       border-radius: 50px;
       font-size: 0.75rem;
       font-weight: 700;
@@ -201,13 +204,14 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
     }
 
-    .top-right-skip i {
+    .top-btn i {
       color: var(--yellow-brand);
     }
 
-    .top-right-skip:hover {
+    .top-btn:hover {
       background: #ffffff;
       color: #000000;
     }
@@ -307,7 +311,7 @@
     }
 
     /* ============================================================
-       CAPAS 2 & 3: FORMULARIOS INTERNOS
+       CAPAS INTERNAS: FORMULARIOS Y VISOR DE ADMINISTRADOR
        ============================================================ */
     .view-screen {
       display: none;
@@ -444,7 +448,7 @@
       border-color: var(--blue-brand);
     }
 
-    .attraction-clean-box {
+    .clean-box-item {
       background: var(--bg-light);
       border: 1px solid var(--border-light);
       border-radius: 6px;
@@ -513,7 +517,7 @@
       cursor: pointer;
     }
 
-    /* Modal Password */
+    /* Modales de Clave */
     .auth-overlay {
       position: fixed;
       inset: 0;
@@ -548,6 +552,20 @@
       display: none;
       z-index: 12000;
     }
+
+    /* Visor Consolidado Admin */
+    .admin-report-view {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #0f172a;
+      white-space: pre-wrap;
+      max-height: 480px;
+      overflow-y: auto;
+    }
   </style>
 </head>
 <body>
@@ -571,16 +589,22 @@
 
       <div class="video-overlay-tint"></div>
 
-      <button class="top-right-skip" onclick="quickSkipHome()">
-        <span>Saltar / Ir Directo</span>
-        <i class="fa-solid fa-forward-step"></i>
-      </button>
+      <div class="top-actions-bar">
+        <button class="top-btn" onclick="openAdminModal()">
+          <i class="fa-solid fa-user-shield"></i>
+          <span>Admin</span>
+        </button>
+        <button class="top-btn" onclick="quickSkipHome()">
+          <i class="fa-solid fa-forward-step"></i>
+          <span>Saltar</span>
+        </button>
+      </div>
 
       <div class="home-content">
         <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" alt="Destinos Ven" class="logo-hero">
         <h1 class="home-phrase">EL LATIDO DE VENEZUELA</h1>
         <p class="home-tagline">
-          Ruta audiovisual cinematográfica por 16 estados. Hospedaje, gastronomía emblemática, atractivos turísticos e industria tecnificada.
+          Ruta audiovisual cinematográfica por 16 estados. Hospedaje, gastronomía emblemática, espacios públicos, centros comerciales e industria tecnificada.
         </p>
 
         <div class="home-buttons">
@@ -597,7 +621,7 @@
       </div>
     </section>
 
-    <!-- CAPA 2: POSTULACIÓN ALIADOS -->
+    <!-- CAPA 2: POSTULACIÓN ALIADOS (RESTAURANTES, HOTELES, AGRO) -->
     <section class="view-screen" id="layerAliados">
       <div class="container" style="max-width: 680px;">
         <div class="top-bar-nav">
@@ -617,11 +641,11 @@
             <div class="grid-2">
               <div>
                 <label class="form-label">Nombre Comercial</label>
-                <input type="text" class="form-input" required placeholder="Nombre de la marca">
+                <input type="text" class="form-input" id="postula_nombre" required placeholder="Nombre de la marca">
               </div>
               <div>
                 <label class="form-label">Estado</label>
-                <select class="form-input" required id="selectEstadoAliado">
+                <select class="form-input" required id="postula_estado">
                   <option value="">Selecciona tu estado</option>
                   <option value="Táchira">Táchira</option>
                   <option value="Mérida">Mérida</option>
@@ -646,7 +670,7 @@
             <div class="grid-2">
               <div>
                 <label class="form-label">Categoría</label>
-                <select class="form-input" required>
+                <select class="form-input" id="postula_categoria" required>
                   <option value="Restaurante">Restaurante / Gastronomía</option>
                   <option value="Hotel">Hotel o Posada Boutique</option>
                   <option value="Agroindustria">Empresa / Agroindustria</option>
@@ -655,30 +679,30 @@
               </div>
               <div>
                 <label class="form-label">Teléfono / WhatsApp</label>
-                <input type="tel" class="form-input" required placeholder="+58 414 ...">
+                <input type="tel" class="form-input" id="postula_telefono" required placeholder="+58 414 ...">
               </div>
             </div>
 
             <div class="grid-2">
               <div>
                 <label class="form-label">Instagram / Web</label>
-                <input type="text" class="form-input" placeholder="@cuenta">
+                <input type="text" class="form-input" id="postula_social" placeholder="@cuenta">
               </div>
               <div>
                 <label class="form-label">Propuesta de Valor</label>
-                <input type="text" class="form-input" required placeholder="Especialidad o capacidad técnica">
+                <input type="text" class="form-input" id="postula_descripcion" required placeholder="Especialidad o capacidad técnica">
               </div>
             </div>
 
             <button type="submit" class="btn btn-institucional" style="width: 100%; margin-top: 6px;">
-              Enviar Postulación
+              <i class="fa-solid fa-paper-plane"></i> Enviar Postulación al Equipo
             </button>
           </form>
         </div>
       </div>
     </section>
 
-    <!-- CAPA 3: INSTITUCIONAL -->
+    <!-- CAPA 3: INSTITUCIONAL (DIRECTORES DE TURISMO) -->
     <section class="view-screen" id="layerInstitucional">
       <div class="container">
         <div class="top-bar-nav">
@@ -700,13 +724,13 @@
         <div class="states-grid" id="statesContainer"></div>
 
         <div class="card-clean">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
             <div>
               <span style="font-size: 0.75rem; font-weight: 700; color: var(--blue-brand);" id="activeStateLabel">TÁCHIRA</span>
               <h3 style="font-family: var(--font-title); font-size: 1.3rem;" id="activeDayTitle">HOJA DE RUTA: DÍA 1</h3>
             </div>
             <button class="btn btn-institucional" onclick="saveDayPlan()">
-              <i class="fa-solid fa-floppy-disk"></i> Guardar
+              <i class="fa-solid fa-floppy-disk"></i> Guardar Jornada y Enviar Reporte
             </button>
           </div>
 
@@ -718,16 +742,17 @@
             <button class="day-tag-btn" onclick="setDay(5)">Día 5</button>
           </div>
 
+          <!-- Módulos Fijos -->
           <div class="grid-2">
             <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
-              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;">1. Hospedaje & Desayuno</div>
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;"><i class="fa-solid fa-hotel"></i> 1. Hospedaje & Desayuno</div>
               <input type="text" class="form-input" id="hotel_name" placeholder="Hotel o Posada">
               <input type="text" class="form-input" id="hotel_breakfast" placeholder="Plato Insignia Desayuno">
               <input type="text" class="form-input" id="hotel_contact" placeholder="Contacto / WhatsApp">
             </div>
 
             <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
-              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;">2. Empresa Tecno-Productiva</div>
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;"><i class="fa-solid fa-industry"></i> 2. Empresa Tecno-Productiva</div>
               <input type="text" class="form-input" id="ind_name" placeholder="Fábrica o Agroindustria">
               <input type="text" class="form-input" id="ind_tech" placeholder="Línea de producción">
               <input type="text" class="form-input" id="ind_contact" placeholder="Enlace de planta">
@@ -736,26 +761,70 @@
 
           <div class="grid-2">
             <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
-              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;">3. Almuerzo Regional</div>
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;"><i class="fa-solid fa-utensils"></i> 3. Almuerzo Regional</div>
               <input type="text" class="form-input" id="lunch_name" placeholder="Restaurante">
               <input type="text" class="form-input" id="lunch_dish" placeholder="Plato autóctono">
             </div>
 
             <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
-              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;">4. Experiencia Nocturna (Cena)</div>
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem; margin-bottom: 8px;"><i class="fa-solid fa-moon"></i> 4. Experiencia Nocturna (Cena)</div>
               <input type="text" class="form-input" id="dinner_name" placeholder="Restaurante / Lounge">
               <input type="text" class="form-input" id="dinner_dish" placeholder="Menú / Coctelería">
             </div>
           </div>
 
-          <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px;">
+          <!-- Atractivos Turísticos Abiertos -->
+          <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem;">5. Atractivos Turísticos del Día</div>
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem;"><i class="fa-solid fa-mountain-sun"></i> 5. Atractivos e Íconos Turísticos del Día</div>
               <button class="btn btn-aliado" style="font-size: 0.75rem; padding: 4px 10px;" onclick="addAttractionField()">
-                <i class="fa-solid fa-plus"></i> Añadir
+                <i class="fa-solid fa-plus"></i> Añadir Atractivo
               </button>
             </div>
             <div id="attractionsList"></div>
+          </div>
+
+          <!-- NUEVO MÓDULO SOLICITADO: CENTROS COMERCIALES Y ESPACIOS PÚBLICOS -->
+          <div style="background: var(--bg-light); border: 1px solid var(--border-light); padding: 12px; border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div style="font-weight: 700; color: var(--blue-brand); font-size: 0.8rem;"><i class="fa-solid fa-city"></i> 6. Centros Comerciales & Espacios Públicos (Nombre y Nota)</div>
+              <button class="btn btn-aliado" style="font-size: 0.75rem; padding: 4px 10px;" onclick="addPublicSpaceField()">
+                <i class="fa-solid fa-plus"></i> Añadir Espacio
+              </button>
+            </div>
+            <div id="publicSpacesList"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPA 4: PANEL CONSOLIDADO DE ADMINISTRADOR (VER Y VERIFICAR) -->
+    <section class="view-screen" id="layerAdmin">
+      <div class="container">
+        <div class="top-bar-nav">
+          <button class="back-btn" onclick="showLayer('layerHome')">
+            <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
+          </button>
+          <div style="font-weight: 700; color: var(--yellow-brand); font-size: 0.85rem; background: #000; padding: 4px 12px; border-radius: 4px;">
+            <i class="fa-solid fa-shield-halved"></i> PANEL MAESTRO DE PRODUCCIÓN
+          </div>
+        </div>
+
+        <div class="card-clean" style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <h2 style="font-family: var(--font-title); font-size: 1.6rem; color: var(--blue-brand);">Verificación de Jornadas Recopiladas</h2>
+              <p style="color: #64748b; font-size: 0.85rem;">Consulta en tiempo real la información enviada por los estados y restaurantes.</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-aliado" onclick="copyReportText()"><i class="fa-solid fa-copy"></i> Copiar Reporte</button>
+              <button class="btn btn-institucional" onclick="exportDataJSON()"><i class="fa-solid fa-download"></i> Descargar Base JSON</button>
+            </div>
+          </div>
+
+          <div class="admin-report-view" id="adminReportBox">
+            Cargando base de datos consolidada...
           </div>
         </div>
       </div>
@@ -775,7 +844,7 @@
     </div>
   </div>
 
-  <!-- MODAL CLAVE -->
+  <!-- MODAL CLAVE INSTITUCIONAL -->
   <div class="auth-overlay" id="authModal">
     <div class="auth-box">
       <button class="close-video" style="color: #64748b; position: absolute; top: 10px; right: 10px;" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -789,10 +858,27 @@
     </div>
   </div>
 
+  <!-- MODAL CLAVE ADMINISTRADOR -->
+  <div class="auth-overlay" id="adminAuthModal">
+    <div class="auth-box">
+      <button class="close-video" style="color: #64748b; position: absolute; top: 10px; right: 10px;" onclick="closeAdminModal()"><i class="fa-solid fa-xmark"></i></button>
+      <span style="font-size: 0.75rem; font-weight: 700; color: var(--yellow-brand); background: #0f172a; padding: 2px 8px; border-radius: 4px; text-transform: uppercase;">Control de Producción</span>
+      <h3 style="font-family: var(--font-title); font-size: 1.3rem; margin: 6px 0 10px;">Clave de Administrador</h3>
+      <input type="password" class="form-input" id="adminPassword" placeholder="Clave maestra">
+      <small style="color: #64748b; display: block; margin-top: -6px; margin-bottom: 12px;">Clave demo: <b>ADMINVEN2026</b></small>
+      <button class="btn btn-institucional" style="width: 100%;" onclick="validateAdminKey()">
+        Entrar al Visor Maestro
+      </button>
+    </div>
+  </div>
+
   <div class="toast" id="toastBox">Acción realizada</div>
 
   <script>
     const YOUTUBE_ID = "4NjxVjp5zCc";
+
+    /* TU ENDPOINT OFICIAL DE FORMSPREE CONECTADO DIRECTO A TU GMAIL */
+    const GMAIL_ENDPOINT = "https://formspree.io/f/xzezlwbg";
 
     const routes = {
       andes: { name: "Los Andes", states: ["Táchira", "Mérida", "Trujillo"] },
@@ -813,11 +899,14 @@
             industry: { name: "Central Cafetalera", tech: "Selección electrónica de grano", contact: "Gerente" },
             lunch: { name: "Fogón de la Sierra", dish: "Trucha ahumada" },
             dinner: { name: "Mirador Las Cumbres", dish: "Coctelería de autor" },
-            attractions: [{ name: "Páramo El Zumbador", type: "Natural", light: "Amanecer", guide: "Guardaparques" }]
+            attractions: [{ name: "Páramo El Zumbador", light: "Amanecer (06:30)" }],
+            publicSpaces: [{ name: "Plaza Bolívar de Cordero", note: "Tomas abiertas de arquitectura típica y ambiente local" }]
           }
         }
       }
     };
+
+    let externalSubmissions = JSON.parse(localStorage.getItem('destinos_ven_aliados')) || [];
 
     window.addEventListener('DOMContentLoaded', () => {
       renderStatesList();
@@ -836,7 +925,12 @@
       document.getElementById('layerHome').style.display = (layerId === 'layerHome') ? 'flex' : 'none';
       document.getElementById('layerAliados').style.display = (layerId === 'layerAliados') ? 'block' : 'none';
       document.getElementById('layerInstitucional').style.display = (layerId === 'layerInstitucional') ? 'block' : 'none';
+      document.getElementById('layerAdmin').style.display = (layerId === 'layerAdmin') ? 'block' : 'none';
       window.scrollTo(0, 0);
+
+      if (layerId === 'layerAdmin') {
+        renderAdminConsolidatedReport();
+      }
     }
 
     function openPromoModal() {
@@ -867,9 +961,29 @@
         closeAuthModal();
         showLayer('layerInstitucional');
         loadDayData();
-        showToast("Acceso validado");
+        showToast("Acceso validado para Instituciones");
       } else {
-        alert("Clave incorrecta: DESTINOSVEN2026");
+        alert("Clave incorrecta. Use: DESTINOSVEN2026");
+      }
+    }
+
+    /* Modal Administrador */
+    function openAdminModal() {
+      document.getElementById('adminAuthModal').style.display = 'flex';
+    }
+
+    function closeAdminModal() {
+      document.getElementById('adminAuthModal').style.display = 'none';
+    }
+
+    function validateAdminKey() {
+      const key = document.getElementById('adminPassword').value.trim();
+      if (key === 'ADMINVEN2026') {
+        closeAdminModal();
+        showLayer('layerAdmin');
+        showToast("Panel Maestro de Administrador desbloqueado");
+      } else {
+        alert("Clave de Administrador incorrecta. Use: ADMINVEN2026");
       }
     }
 
@@ -930,35 +1044,61 @@
       document.getElementById('dinner_name').value = d ? (d.dinner.name || '') : '';
       document.getElementById('dinner_dish').value = d ? (d.dinner.dish || '') : '';
 
-      const container = document.getElementById('attractionsList');
-      container.innerHTML = '';
+      // Atractivos
+      const containerAtt = document.getElementById('attractionsList');
+      containerAtt.innerHTML = '';
       if (d && d.attractions && d.attractions.length > 0) {
         d.attractions.forEach(a => addAttractionField(a));
       } else {
-        addAttractionField({ name: '', type: '', light: '', guide: '' });
+        addAttractionField({ name: '', light: '' });
+      }
+
+      // Espacios Públicos y CC
+      const containerPub = document.getElementById('publicSpacesList');
+      containerPub.innerHTML = '';
+      if (d && d.publicSpaces && d.publicSpaces.length > 0) {
+        d.publicSpaces.forEach(p => addPublicSpaceField(p));
+      } else {
+        addPublicSpaceField({ name: '', note: '' });
       }
     }
 
-    function addAttractionField(data = { name: '', type: '', light: '', guide: '' }) {
+    function addAttractionField(data = { name: '', light: '' }) {
       const box = document.getElementById('attractionsList');
       const div = document.createElement('div');
-      div.className = 'attraction-clean-box';
+      div.className = 'clean-box-item';
       div.innerHTML = `
         <button class="btn-trash" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
         <div class="grid-2">
-          <input type="text" class="form-input att-name" value="${data.name}" placeholder="Nombre del atractivo">
+          <input type="text" class="form-input att-name" value="${data.name}" placeholder="Nombre del atractivo o ícono">
           <input type="text" class="form-input att-light" value="${data.light}" placeholder="Momento de luz (Amanecer / Tarde)">
         </div>
       `;
       box.appendChild(div);
     }
 
+    function addPublicSpaceField(data = { name: '', note: '' }) {
+      const box = document.getElementById('publicSpacesList');
+      const div = document.createElement('div');
+      div.className = 'clean-box-item';
+      div.innerHTML = `
+        <button class="btn-trash" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+        <div class="grid-2">
+          <input type="text" class="form-input pub-name" value="${data.name}" placeholder="Nombre del Centro Comercial o Espacio Público">
+          <input type="text" class="form-input pub-note" value="${data.note}" placeholder="Descripción o nota (Ej: Paseo peatonal, arquitectura moderna)">
+        </div>
+      `;
+      box.appendChild(div);
+    }
+
+    /* GUARDAR JORNADA Y ENVIAR AUTOMÁTICAMENTE AL CORREO GMAIL */
     function saveDayPlan() {
       if (!productionDb[activeState]) {
         productionDb[activeState] = { days: {} };
       }
 
-      const attEls = document.querySelectorAll('.attraction-clean-box');
+      // Recopilar Atractivos
+      const attEls = document.querySelectorAll('#attractionsList .clean-box-item');
       const atts = [];
       attEls.forEach(el => {
         const name = el.querySelector('.att-name').value.trim();
@@ -966,7 +1106,16 @@
         if (name) atts.push({ name, light });
       });
 
-      productionDb[activeState].days[activeDay] = {
+      // Recopilar Espacios Públicos y CC
+      const pubEls = document.querySelectorAll('#publicSpacesList .clean-box-item');
+      const pubs = [];
+      pubEls.forEach(el => {
+        const name = el.querySelector('.pub-name').value.trim();
+        const note = el.querySelector('.pub-note').value.trim();
+        if (name) pubs.push({ name, note });
+      });
+
+      const dayPayload = {
         hotel: {
           name: document.getElementById('hotel_name').value.trim(),
           breakfast: document.getElementById('hotel_breakfast').value.trim(),
@@ -985,26 +1134,162 @@
           name: document.getElementById('dinner_name').value.trim(),
           dish: document.getElementById('dinner_dish').value.trim()
         },
-        attractions: atts
+        attractions: atts,
+        publicSpaces: pubs
       };
 
+      productionDb[activeState].days[activeDay] = dayPayload;
       localStorage.setItem('destinos_ven_db', JSON.stringify(productionDb));
-      showToast(`Día ${activeDay} de ${activeState} guardado.`);
+
+      // Preparar informe para enviar al Gmail
+      const emailReport = `
+========================================
+NUEVA JORNADA INSTITUCIONAL - DESTINOS VEN
+========================================
+ESTADO: ${activeState.toUpperCase()}
+JORNADA: DÍA ${activeDay}
+
+1. HOSPEDAJE & DESAYUNO:
+- Hotel/Posada: ${dayPayload.hotel.name}
+- Desayuno: ${dayPayload.hotel.breakfast}
+- Contacto: ${dayPayload.hotel.contact}
+
+2. EJE PRODUCTIVO:
+- Empresa: ${dayPayload.industry.name}
+- Nivel Tecnológico: ${dayPayload.industry.tech}
+- Contacto: ${dayPayload.industry.contact}
+
+3. ALMUERZO:
+- Restaurante: ${dayPayload.lunch.name}
+- Plato: ${dayPayload.lunch.dish}
+
+4. CENA:
+- Restaurante: ${dayPayload.dinner.name}
+- Menú/Concepto: ${dayPayload.dinner.dish}
+
+5. ATRACTIVOS E ÍCONOS TURÍSTICOS:
+${atts.map((a, i) => `   ${i+1}. ${a.name} (${a.light})`).join('\n') || '   Ninguno'}
+
+6. CENTROS COMERCIALES Y ESPACIOS PÚBLICOS:
+${pubs.map((p, i) => `   ${i+1}. ${p.name} - Nota:${p.note}`).join('\n') || '   Ninguno'}
+========================================
+`;
+
+      sendToGmail(`Jornada Día ${activeDay} - ${activeState}`, emailReport);
+      showToast(`Día ${activeDay} de ${activeState} guardado y enviado a tu Gmail.`);
     }
 
+    /* ENVIAR POSTULACIÓN DE ALIADOS Y AL CORREO */
     function handleAliadoSubmit(e) {
       e.preventDefault();
-      showToast("Postulación enviada.");
+      const aliado = {
+        nombre: document.getElementById('postula_nombre').value.trim(),
+        estado: document.getElementById('postula_estado').value.trim(),
+        categoria: document.getElementById('postula_categoria').value.trim(),
+        telefono: document.getElementById('postula_telefono').value.trim(),
+        social: document.getElementById('postula_social').value.trim(),
+        descripcion: document.getElementById('postula_descripcion').value.trim(),
+        fecha: new Date().toLocaleString()
+      };
+
+      externalSubmissions.push(aliado);
+      localStorage.setItem('destinos_ven_aliados', JSON.stringify(externalSubmissions));
+
+      const emailText = `
+========================================
+POSTULACIÓN DE ALIADO - DESTINOS VEN
+========================================
+Nombre Comercial: ${aliado.nombre}
+Estado: ${aliado.estado}
+Categoría: ${aliado.categoria}
+Teléfono/WhatsApp: ${aliado.telefono}
+Instagram/Web: ${aliado.social}
+Propuesta de Valor: ${aliado.descripcion}
+Fecha: ${aliado.fecha}
+========================================
+`;
+
+      sendToGmail(`Nueva Postulación: ${aliado.nombre} (${aliado.estado})`, emailText);
+      showToast("Postulación registrada y enviada a tu Gmail.");
       e.target.reset();
-      setTimeout(() => showLayer('layerHome'), 1200);
+      setTimeout(() => showLayer('layerHome'), 1500);
+    }
+
+    /* DISPATCHER UNIVERSAL A GMAIL */
+    function sendToGmail(asunto, cuerpo) {
+      fetch(GMAIL_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          subject: `[Destinos Ven] ${asunto}`,
+          message: cuerpo
+        })
+      }).catch(err => console.log("Guardado local garantizado.", err));
+    }
+
+    /* RENDERIZADOR DEL VISOR CONSOLIDADO PARA ADMINISTRADOR */
+    function renderAdminConsolidatedReport() {
+      const box = document.getElementById('adminReportBox');
+      let text = "======================================================\n";
+      text += "   BASE DE DATOS MAESTRA - DESTINOS VEN (2026)\n";
+      text += "======================================================\n\n";
+
+      text += ">>> 1. PLANES ESTADALES REGISTRADOS:\n";
+      for (const st in productionDb) {
+        text += `\n------------------------------------------------------\nESTADO: ${st.toUpperCase()}\n------------------------------------------------------\n`;
+        const days = productionDb[st].days || {};
+        for (const d in days) {
+          const item = days[d];
+          text += `\n[DÍA ${d}]\n`;
+          text += `* Hotel: ${item.hotel.name || 'N/A'} | Desayuno: ${item.hotel.breakfast || 'N/A'}\n`;
+          text += `* Empresa: ${item.industry.name || 'N/A'} (${item.industry.tech || ''})\n`;
+          text += `* Almuerzo: ${item.lunch.name || 'N/A'} (${item.lunch.dish || ''})\n`;
+          text += `* Cena: ${item.dinner.name || 'N/A'} (${item.dinner.dish || ''})\n`;
+          text += `* Atractivos: ${item.attractions ? item.attractions.map(a => a.name).join(', ') : 'Ninguno'}\n`;
+          text += `* Espacios Públicos y CC: ${item.publicSpaces ? item.publicSpaces.map(p => `${p.name} (${p.note})`).join('; ') : 'Ninguno'}\n`;
+        }
+      }
+
+      text += "\n\n>>> 2. POSTULACIONES DE EMPRESAS Y RESTAURANTES:\n";
+      if (externalSubmissions.length === 0) {
+        text += "No hay postulaciones externas pendientes.\n";
+      } else {
+        externalSubmissions.forEach((sub, i) => {
+          text += `\n[${i+1}] ${sub.nombre} | ${sub.estado} (${sub.categoria})\n`;
+          text += `    Tel: ${sub.telefono} | Redes: ${sub.social}\n`;
+          text += `    Nota: ${sub.descripcion}\n`;
+        });
+      }
+
+      box.innerText = text;
+    }
+
+    function copyReportText() {
+      const text = document.getElementById('adminReportBox').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("Reporte copiado al portapapeles.");
+      });
+    }
+
+    function exportDataJSON() {
+      const consolidated = { planes_estadales: productionDb, aliados_postulados: externalSubmissions };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(consolidated, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `DestinosVen_MasterDB.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
     }
 
     function showToast(msg) {
       const t = document.getElementById('toastBox');
       t.innerText = msg;
       t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 2500);
+      setTimeout(() => t.style.display = 'none', 3000);
     }
   </script>
 </body>
 </html>
+
+```
