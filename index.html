@@ -122,7 +122,7 @@
       }
     }
 
-    /* Permite ver la landing page de postulación en vertical en celulares */
+    /* Permite ver la landing page de postulación en formato vertical en celulares */
     body.allow-portrait #landscape-lock {
       display: none !important;
     }
@@ -325,7 +325,7 @@
       padding: max(20px, env(safe-area-inset-top)) 0 max(30px, env(safe-area-inset-bottom));
     }
 
-    /* ESTILOS DE LA NUEVA LANDING PAGE DE POSTULACIÓN */
+    /* ESTILOS DE LA LANDING PAGE DE POSTULACIÓN */
     #layerAliados {
       position: relative;
       background: #000000;
@@ -352,7 +352,7 @@
     .postulate-overlay-tint {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%);
+      background: radial-gradient(circle at center, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.88) 100%);
       pointer-events: none;
       z-index: 2;
     }
@@ -361,7 +361,7 @@
       position: relative;
       z-index: 3;
       width: 100%;
-      max-width: 860px;
+      max-width: 880px;
       margin: 0 auto;
       padding: max(20px, env(safe-area-inset-top)) 20px max(40px, env(safe-area-inset-bottom));
     }
@@ -413,12 +413,12 @@
       line-height: 1.5;
     }
 
-    /* Grilla de los 2 videos de YouTube */
+    /* Grilla de los videos de YouTube */
     .video-showcase-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .video-card-box {
@@ -461,6 +461,120 @@
 
     .video-card-desc {
       font-size: 0.75rem;
+      color: #94a3b8;
+      line-height: 1.35;
+    }
+
+    /* NUEVA SECCIÓN DE MARCA PAÍS VENEZUELA (@marcapaisven) */
+    .marcapais-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 199, 44, 0.35);
+      border-radius: 12px;
+      padding: clamp(16px, 3vw, 24px);
+      margin-bottom: 28px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    }
+
+    .marcapais-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 12px;
+    }
+
+    .marcapais-brand-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .marcapais-brand-tag:hover {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .marcapais-brand-tag i {
+      color: #e1306c;
+      font-size: 1rem;
+    }
+
+    .marcapais-grid {
+      display: grid;
+      grid-template-columns: minmax(300px, 380px) 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    @media (max-width: 800px) {
+      .marcapais-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .instagram-embed-holder {
+      background: #000000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .instagram-embed-holder iframe {
+      width: 100%;
+      max-width: 380px;
+      height: 520px;
+      border: none;
+      border-radius: 12px;
+    }
+
+    .marcapais-info-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .social-proof-pill {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+
+    .social-proof-pill i {
+      color: var(--yellow-brand);
+      font-size: 1.1rem;
+      margin-top: 2px;
+    }
+
+    .social-proof-pill h4 {
+      font-size: 0.88rem;
+      color: #ffffff;
+      margin-bottom: 2px;
+      font-weight: 700;
+    }
+
+    .social-proof-pill p {
+      font-size: 0.78rem;
       color: #94a3b8;
       line-height: 1.35;
     }
@@ -803,7 +917,7 @@
 </head>
 <body>
 
-  <!-- CAPA 0: BLOQUEO VERTICAL (Para la experiencia cinematográfica horizontal) -->
+  <!-- CAPA 0: BLOQUEO VERTICAL -->
   <div id="landscape-lock">
     <div class="phone-rotate-icon">
       <i class="fa-solid fa-mobile-screen-button"></i>
@@ -854,9 +968,8 @@
       </div>
     </section>
 
-    <!-- CAPA 2: NUEVA LANDING PAGE DE POSTULACIÓN CON BANNER2 Y VIDEOS DE YOUTUBE -->
+    <!-- CAPA 2: LANDING PAGE DE POSTULACIÓN CON BANNER2, YOUTUBE Y MARCA PAÍS -->
     <section class="view-screen" id="layerAliados">
-      <!-- Video de fondo banner2 en pantalla completa -->
       <video class="postulate-bg-video" autoplay loop muted playsinline poster="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
         <source src="banner2.mp4" type="video/mp4">
       </video>
@@ -885,7 +998,7 @@
           </p>
         </div>
 
-        <!-- MUESTRAS AUDIOVISUALES (VIDEOS DE YOUTUBE AGREGADOS) -->
+        <!-- MUESTRAS AUDIOVISUALES (VIDEOS DE YOUTUBE) -->
         <div class="video-showcase-grid">
           <div class="video-card-box">
             <div class="video-iframe-wrap">
@@ -904,6 +1017,70 @@
             <div class="video-card-info">
               <div class="video-card-title"><i class="fa-solid fa-compass"></i> Experiencia y Territorio</div>
               <p class="video-card-desc">Recorrido por locaciones emblemáticas, gastronomía y el dinamismo productivo nacional.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN: RESPALDO OFICIAL Y REFERENCIA DE ALCANCE (MARCA PAÍS VENEZUELA) -->
+        <div class="marcapais-card">
+          <div class="marcapais-header">
+            <div>
+              <span style="font-size: 0.72rem; font-weight: 700; color: var(--yellow-brand); text-transform: uppercase; letter-spacing: 1px;">
+                <i class="fa-solid fa-certificate"></i> Proyección y Respaldo Institucional
+              </span>
+              <h3 style="font-family: var(--font-title); font-size: 1.15rem; color: #ffffff; margin-top: 2px;">
+                Ecosistema Oficial Marca País Venezuela
+              </h3>
+            </div>
+            <!-- Enlace directo a la cuenta oficial de Instagram -->
+            <a href="https://www.instagram.com/marcapaisven" target="_blank" rel="noopener noreferrer" class="marcapais-brand-tag">
+              <i class="fa-brands fa-instagram"></i>
+              <span>@marcapaisven</span>
+              <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; opacity: 0.8;"></i>
+            </a>
+          </div>
+
+          <div class="marcapais-grid">
+            <!-- REEL EMBEBIDO DE INSTAGRAM (Muestra likes, comentarios y reproducciones en vivo) -->
+            <div class="instagram-embed-holder">
+              <iframe src="https://www.instagram.com/reel/Dd7Y5EeObkD/embed/captioned/" allowtransparency="true" allowfullscreen="true" scrolling="no"></iframe>
+            </div>
+
+            <!-- Panel de lectura de impacto (natural, sin sentirse como venta agresiva) -->
+            <div class="marcapais-info-panel">
+              <div class="social-proof-pill">
+                <i class="fa-solid fa-chart-line"></i>
+                <div>
+                  <h4>Referencia Real de Alcance</h4>
+                  <p>Las piezas audiovisuales se conciben para generar repercusión masiva orgánica, miles de visualizaciones y presencia directa en los canales de difusión de identidad país.</p>
+                </div>
+              </div>
+
+              <div class="social-proof-pill">
+                <i class="fa-solid fa-users-viewfinder"></i>
+                <div>
+                  <h4>Interacción y Audiencia Certificada</h4>
+                  <p>En el Reel interactivo puedes comprobar directamente los <b>"Me Gusta"</b>, reproducciones continuas y la respuesta de la comunidad ante contenidos cinematográficos de este nivel.</p>
+                </div>
+              </div>
+
+              <div class="social-proof-pill">
+                <i class="fa-solid fa-gem"></i>
+                <div>
+                  <h4>Vitrina para tu Establecimiento</h4>
+                  <p>Los aliados seleccionados en cada estado no solo obtienen material audiovisual de alta gama, sino un posicionamiento de escala nacional y proyección turística.</p>
+                </div>
+              </div>
+
+              <!-- Enlaces auxiliares -->
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                <a href="https://www.instagram.com/reel/Dd7Y5EeObkD/?stkn=ZXEya3FscmFnc3N2&" target="_blank" rel="noopener noreferrer" class="btn btn-aliado" style="font-size: 0.75rem; padding: 6px 12px; background: rgba(255,255,255,0.12); color:#fff; border-color: rgba(255,255,255,0.25);">
+                  <i class="fa-solid fa-eye"></i> Abrir Reel en Instagram
+                </a>
+                <a href="https://www.instagram.com/marcapaisven" target="_blank" rel="noopener noreferrer" class="btn btn-aliado" style="font-size: 0.75rem; padding: 6px 12px; background: rgba(255,255,255,0.12); color:#fff; border-color: rgba(255,255,255,0.25);">
+                  <i class="fa-brands fa-instagram"></i> Ver Perfil Oficial
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -1212,7 +1389,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       renderStatesList();
 
-      // Detección automática de enlace directo para postulación
+      // Detección de enlace directo para postulación
       if (window.location.hash === '#postulate' || window.location.pathname.endsWith('/postulate')) {
         showLayer('layerAliados');
       }
@@ -1242,7 +1419,7 @@
       document.getElementById('layerAdmin').style.display = (layerId === 'layerAdmin') ? 'block' : 'none';
       window.scrollTo(0, 0);
 
-      // Si entra a postulación, permite modo vertical en teléfonos y ajusta el hash
+      // Si entra a postulación, permite vista vertical en móviles y actualiza el hash
       if (layerId === 'layerAliados') {
         document.body.classList.add('allow-portrait');
         window.location.hash = 'postulate';
