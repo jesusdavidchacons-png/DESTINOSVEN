@@ -122,6 +122,14 @@
       }
     }
 
+    /* Permite ver la landing page de postulación en vertical en celulares */
+    body.allow-portrait #landscape-lock {
+      display: none !important;
+    }
+    body.allow-portrait #app-content {
+      display: block !important;
+    }
+
     .container {
       width: 100%;
       max-width: 1080px;
@@ -317,6 +325,155 @@
       padding: max(20px, env(safe-area-inset-top)) 0 max(30px, env(safe-area-inset-bottom));
     }
 
+    /* ESTILOS DE LA NUEVA LANDING PAGE DE POSTULACIÓN */
+    #layerAliados {
+      position: relative;
+      background: #000000;
+      color: var(--text-white);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    .postulate-bg-video {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      opacity: 0.38;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .postulate-overlay-tint {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .postulate-content-wrap {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: max(20px, env(safe-area-inset-top)) 20px max(40px, env(safe-area-inset-bottom));
+    }
+
+    .postulate-top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .postulate-hero-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .postulate-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 199, 44, 0.15);
+      border: 1px solid var(--yellow-brand);
+      color: var(--yellow-brand);
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .postulate-title {
+      font-family: var(--font-title);
+      font-size: clamp(1.6rem, 3.8vw, 2.4rem);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .postulate-subtitle {
+      color: #cbd5e1;
+      font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+      max-width: 650px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Grilla de los 2 videos de YouTube */
+    .video-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .video-card-box {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .video-iframe-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-iframe-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-card-info {
+      padding: 10px 14px 12px;
+    }
+
+    .video-card-title {
+      font-family: var(--font-title);
+      font-size: 0.9rem;
+      color: var(--yellow-brand);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .video-card-desc {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      line-height: 1.35;
+    }
+
+    .postulate-form-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: clamp(18px, 3.5vw, 32px);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
     .top-bar-nav {
       display: flex;
       justify-content: space-between;
@@ -338,6 +495,26 @@
       gap: 6px;
     }
 
+    .back-btn-light {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn-light:hover {
+      background: #ffffff;
+      color: #000000;
+    }
+
     .card-clean {
       background: #ffffff;
       border: 1px solid var(--border-light);
@@ -353,6 +530,10 @@
       letter-spacing: 0.5px;
       color: #475569;
       margin-bottom: 4px;
+    }
+
+    .form-label-dark {
+      color: #cbd5e1;
     }
 
     .form-input {
@@ -589,6 +770,7 @@
       font-weight: 600;
       display: none;
       z-index: 12000;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
 
     .admin-report-view {
@@ -611,11 +793,17 @@
       padding: 14px;
       margin-bottom: 18px;
     }
+
+    @media (max-width: 640px) {
+      .grid-2 {
+        grid-template-columns: 1fr !important;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- CAPA 0: BLOQUEO VERTICAL -->
+  <!-- CAPA 0: BLOQUEO VERTICAL (Para la experiencia cinematográfica horizontal) -->
   <div id="landscape-lock">
     <div class="phone-rotate-icon">
       <i class="fa-solid fa-mobile-screen-button"></i>
@@ -628,7 +816,7 @@
 
     <!-- CAPA 1: PORTADA -->
     <section class="home-layer" id="layerHome">
-      <video class="video-background" autoplay loop muted playsinline>
+      <video class="video-background" autoplay loop muted playsinline poster="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
         <source src="banner.mp4" type="video/mp4">
       </video>
 
@@ -666,30 +854,77 @@
       </div>
     </section>
 
-    <!-- CAPA 2: POSTULACIÓN ALIADOS -->
+    <!-- CAPA 2: NUEVA LANDING PAGE DE POSTULACIÓN CON BANNER2 Y VIDEOS DE YOUTUBE -->
     <section class="view-screen" id="layerAliados">
-      <div class="container" style="max-width: 680px;">
-        <div class="top-bar-nav">
-          <button class="back-btn" onclick="showLayer('layerHome')">
+      <!-- Video de fondo banner2 en pantalla completa -->
+      <video class="postulate-bg-video" autoplay loop muted playsinline poster="https://i.postimg.cc/RZKb8vvf/portada-web.jpg">
+        <source src="banner2.mp4" type="video/mp4">
+      </video>
+      <div class="postulate-overlay-tint"></div>
+
+      <div class="postulate-content-wrap">
+        <!-- Navegación superior -->
+        <div class="postulate-top-nav">
+          <button class="back-btn-light" onclick="showLayer('layerHome')">
             <i class="fa-solid fa-arrow-left"></i> Inicio
           </button>
-          <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" style="height: 32px;" alt="Logo">
+          <img src="https://i.postimg.cc/pdcML089/destinos-ven.png" style="height: 34px;" alt="Destinos Ven">
+          <button class="back-btn-light" onclick="copyPostulateLink()" title="Copiar enlace para compartir">
+            <i class="fa-solid fa-share-nodes"></i> Compartir
+          </button>
         </div>
 
-        <div class="card-clean">
-          <h2 style="font-family: var(--font-title); font-size: 1.5rem; margin-bottom: 4px;">Postula tu Establecimiento</h2>
-          <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 16px;">
-            Hoteles, restaurantes y agroindustrias que integrarán la producción cinematográfica del estado.
+        <!-- Encabezado de la Landing Page -->
+        <div class="postulate-hero-header">
+          <div class="postulate-badge">
+            <i class="fa-solid fa-film"></i> Convocatoria Abierta • 16 Estados
+          </div>
+          <h1 class="postulate-title">POSTULA TU ESTABLECIMIENTO</h1>
+          <p class="postulate-subtitle">
+            Hoteles, restaurantes, agroindustrias y centros de atracción que integrarán la producción cinematográfica oficial de <b>Destinos Ven</b>.
+          </p>
+        </div>
+
+        <!-- MUESTRAS AUDIOVISUALES (VIDEOS DE YOUTUBE AGREGADOS) -->
+        <div class="video-showcase-grid">
+          <div class="video-card-box">
+            <div class="video-iframe-wrap">
+              <iframe src="https://www.youtube.com/embed/XJNvIB3jA48" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-card-info">
+              <div class="video-card-title"><i class="fa-solid fa-play"></i> Muestra Cinematográfica</div>
+              <p class="video-card-desc">Calidad técnica y narrativa visual que acompañará a cada aliado seleccionado en la ruta.</p>
+            </div>
+          </div>
+
+          <div class="video-card-box">
+            <div class="video-iframe-wrap">
+              <iframe src="https://www.youtube.com/embed/S8W_P97eanE" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-card-info">
+              <div class="video-card-title"><i class="fa-solid fa-compass"></i> Experiencia y Territorio</div>
+              <p class="video-card-desc">Recorrido por locaciones emblemáticas, gastronomía y el dinamismo productivo nacional.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORMULARIO DE POSTULACIÓN -->
+        <div class="postulate-form-card">
+          <h2 style="font-family: var(--font-title); font-size: 1.35rem; margin-bottom: 6px; color: var(--yellow-brand);">
+            <i class="fa-solid fa-clipboard-check"></i> Formulario de Registro
+          </h2>
+          <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">
+            Completa la información técnica de tu marca para ser evaluada por el equipo de rodaje.
           </p>
 
           <form onsubmit="handleAliadoSubmit(event)">
             <div class="grid-2">
               <div>
-                <label class="form-label">Nombre Comercial</label>
-                <input type="text" class="form-input" id="postula_nombre" required placeholder="Nombre de la marca">
+                <label class="form-label form-label-dark">Nombre Comercial *</label>
+                <input type="text" class="form-input" id="postula_nombre" required placeholder="Nombre de la marca o empresa">
               </div>
               <div>
-                <label class="form-label">Estado</label>
+                <label class="form-label form-label-dark">Estado de Venezuela *</label>
                 <select class="form-input" required id="postula_estado">
                   <option value="">Selecciona tu estado</option>
                   <option value="Táchira">Táchira</option>
@@ -714,32 +949,32 @@
 
             <div class="grid-2">
               <div>
-                <label class="form-label">Categoría</label>
+                <label class="form-label form-label-dark">Categoría *</label>
                 <select class="form-input" id="postula_categoria" required>
                   <option value="Restaurante">Restaurante / Gastronomía</option>
                   <option value="Hotel">Hotel o Posada Boutique</option>
                   <option value="Agroindustria">Empresa / Agroindustria</option>
-                  <option value="Turismo">Destino / Atractivo</option>
+                  <option value="Turismo">Destino / Atractivo Turístico</option>
                 </select>
               </div>
               <div>
-                <label class="form-label">Teléfono / WhatsApp</label>
+                <label class="form-label form-label-dark">Teléfono / WhatsApp de Contacto *</label>
                 <input type="tel" class="form-input" id="postula_telefono" required placeholder="+58 414 ...">
               </div>
             </div>
 
             <div class="grid-2">
               <div>
-                <label class="form-label">Instagram / Web</label>
-                <input type="text" class="form-input" id="postula_social" placeholder="@cuenta">
+                <label class="form-label form-label-dark">Instagram / Sitio Web</label>
+                <input type="text" class="form-input" id="postula_social" placeholder="@cuenta / enlace">
               </div>
               <div>
-                <label class="form-label">Propuesta de Valor</label>
-                <input type="text" class="form-input" id="postula_descripcion" required placeholder="Especialidad o capacidad técnica">
+                <label class="form-label form-label-dark">Propuesta de Valor o Especialidad *</label>
+                <input type="text" class="form-input" id="postula_descripcion" required placeholder="Plato insignia, capacidad o atractivo">
               </div>
             </div>
 
-            <button type="submit" class="btn btn-institucional" style="width: 100%; margin-top: 6px;">
+            <button type="submit" class="btn btn-promo" style="width: 100%; margin-top: 8px; font-size: 0.95rem; padding: 12px;">
               <i class="fa-solid fa-paper-plane"></i> Enviar Postulación al Equipo
             </button>
           </form>
@@ -976,6 +1211,19 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       renderStatesList();
+
+      // Detección automática de enlace directo para postulación
+      if (window.location.hash === '#postulate' || window.location.pathname.endsWith('/postulate')) {
+        showLayer('layerAliados');
+      }
+    });
+
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash === '#postulate') {
+        showLayer('layerAliados');
+      } else if (window.location.hash === '' || window.location.hash === '#home') {
+        showLayer('layerHome');
+      }
     });
 
     function quickSkipHome() {
@@ -994,8 +1242,32 @@
       document.getElementById('layerAdmin').style.display = (layerId === 'layerAdmin') ? 'block' : 'none';
       window.scrollTo(0, 0);
 
+      // Si entra a postulación, permite modo vertical en teléfonos y ajusta el hash
+      if (layerId === 'layerAliados') {
+        document.body.classList.add('allow-portrait');
+        window.location.hash = 'postulate';
+      } else {
+        document.body.classList.remove('allow-portrait');
+        if (window.location.hash === '#postulate') {
+          history.replaceState(null, null, ' ');
+        }
+      }
+
       if (layerId === 'layerAdmin') {
         renderAdminConsolidatedReport();
+      }
+    }
+
+    function copyPostulateLink() {
+      const url = window.location.origin + window.location.pathname + '#postulate';
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast("Enlace de postulación copiado");
+        }).catch(() => {
+          prompt("Copia este enlace directo:", url);
+        });
+      } else {
+        prompt("Copia este enlace directo:", url);
       }
     }
 
@@ -1360,7 +1632,7 @@ Fecha: ${aliado.fecha}
       sendToGmail(`Postulación: ${aliado.nombre} (${aliado.estado})`, emailText);
       showToast("Postulación registrada y enviada a tu Gmail.");
       e.target.reset();
-      setTimeout(() => showLayer('layerHome'), 1500);
+      setTimeout(() => showLayer('layerHome'), 1800);
     }
 
     function sendToGmail(asunto, cuerpo) {
