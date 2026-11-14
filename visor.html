@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Visor VR 360° - Meta Quest 3</title>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <style>
+    #setup-panel {
+      position: fixed; inset: 0; z-index: 9999; background: rgba(10, 15, 28, 0.96);
+      color: #fff; font-family: system-ui, sans-serif; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 30px; text-align: center;
+    }
+    .box { background: #1e293b; padding: 24px; border-radius: 16px; max-width: 520px; width: 100%; margin: 12px 0; }
+    .row { display: flex; justify-content: space-between; align-items: center; margin: 14px 0; text-align: left; }
+    button.start {
+      margin-top: 20px; padding: 18px 36px; font-size: 1.2rem; font-weight: bold;
+      background: #0284c7; color: white; border: none; border-radius: 14px; cursor: pointer;
+    }
+    .ok { color: #4ade80; font-weight: bold; }
+    .pending { color: #fbbf24; }
+  </style>
+</head>
+<body>
+
+  <!-- Panel inicial (se oculta al entrar en modo VR) -->
+  <div id="setup-panel">
+    <h1>Configuración del Tótem VR</h1>
+    <p style="color:#94a3b8; margin-top:6px;">Carga los videos desde los lentes una sola vez (quedan guardados offline).</p>
+
+    <div class="box">
+      <div class="row">
+        <div>
+          <strong>1. coloniatovar.mp4</strong><br/>
+          <span id="st-coloniatovar" class="pending">Pendiente de cargar</span>
+        </div>
+        <input type="file" accept="video/mp4" onchange="guardarVideo('coloniatovar', this.files[0])" />
+      </div>
+
+      <div class="row">
+        <div>
+          <strong>2. bahíadecata.mp4</strong><br/>
+          <span id="st-bahíadecata" class="pending">Pendiente de cargar</span>
+        </div>
+        <input type="file" accept="video/mp4" onchange="guardarVideo('bahíadecata', this.files[0])" />
+      </div>
+    </div>
+
+    <div id="peer-status" style="margin: 10px 0; color: #38bdf8;">Iniciando receptor inalámbrico...</div>
+    <button class="start" onclick="iniciarExperienciaVR()">INICIAR MODO VR EN TÓTEM</button>
+  </div>
+
+  <!-- Escena 360° A-Frame -->
+  <a-scene id="vr-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false">
+    <a-assets>
+      <video id="video-360" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
+    </a-assets>
+
+    <!-- Esfera de video 360° -->
+    <a-videosphere id="esfera" src="#video-360" rotation="0 -90 0"></a-videosphere>
+
+    <!-- Esfera negra interna para transición suave (fade) sin mareos -->
+    <a-sphere id="fader" radius="1.5" material="color: #000; side: back; transparent: true; opacity: 1"></a-sphere>
+
+    <a-camera look-controls="reverseMouseDrag: false" wasd-controls-enabled="false"></a-camera>
+  </a-scene>
+
+  <script>
+    const VISOR_ID = 'barbarie-totem-quest3-01';
+    const DB_NAME = 'TotemVR_Videos';
+    const videoEl = document.getElementById('video-360');
+    const faderEl = document.getElementById('fader');
+    let db;
+
+    // 1. Inicializar IndexedDB para guardar los MP4 localmente en los Quest 3
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = e => {
+      e.target.result.createObjectStore('videos');
+    };
+    req.onsuccess = e => {
+      db = e.target.result;
+      verificarVideosGuardados();
+    };
+
+    function guardarVideo(key, file) {
+      if (!file || !db) return;
+      const tx = db.transaction('videos', 'readwrite');
+      tx.objectStore('videos').put(file, key);
+      tx.oncomplete = () => {
+        document.getElementById('st-' + key).textContent = 'Guardado en memoria (' + (file.size / 1048576).toFixed(0) + ' MB)';
+        document.getElementById('st-' + key).className = 'ok';
+      };
+    }
+
+    function verificarVideosGuardados() {
+      ['coloniatovar', 'bahíadecata'].forEach(key => {
+        const tx = db.transaction('videos', 'readonly');
+        const getReq = tx.objectStore('videos').get(key);
+        getReq.onsuccess = () => {
+          if (getReq.result) {
+            document.getElementById('st-' + key).textContent = 'Listo en memoria local';
+            document.getElementById('st-' + key).className = 'ok';
+          }
+        };
+      });
+    }
+
+    // 2. Reproducir video desde IndexedDB con transición suave
+    function reproducirDesdeDB(key) {
+      const tx = db.transaction('videos', 'readonly');
+      const getReq = tx.objectStore('videos').get(key);
+
+      getReq.onsuccess = () => {
+        const blob = getReq.result;
+        if (!blob) return;
+
+        // Fade a negro antes de cambiar video
+        faderEl.setAttribute('material', 'opacity', 1);
+
+        setTimeout(() => {
+          if (videoEl.src) URL.revokeObjectURL(videoEl.src);
+          videoEl.src = URL.createObjectURL(blob);
+          videoEl.play().then(() => {
+            // Quitar negro suavemente
+            let op = 1;
+            const fadeInterval = setInterval(() => {
+              op -= 0.1;
+              if (op <= 0) {
+                faderEl.setAttribute('material', 'opacity', 0);
+                clearInterval(fadeInterval);
+              } else {
+                faderEl.setAttribute('material', 'opacity', op);
+              }
+            }, 40);
+          });
+        }, 300);
+      };
+    }
+
+    // 3. Receptor PeerJS (escucha órdenes de la tablet)
+    const peer = new Peer(VISOR_ID);
+
+    peer.on('open', id => {
+      document.getElementById('peer-status').textContent = 'Visor listo para recibir órdenes de la tablet';
+    });
+
+    peer.on('connection', conn => {
+      conn.on('data', data => {
+        if (data.action === 'PLAY' && data.videoId) {
+          reproducirDesdeDB(data.videoId);
+        } else if (data.action === 'PAUSE') {
+          videoEl.paused ? videoEl.play() : videoEl.pause();
+        } else if (data.action === 'RESTART') {
+          videoEl.currentTime = 0;
+          videoEl.play();
+        }
+      });
+    });
+
+    // 4. Desbloquear audio/video con un toque y entrar en modo inmersivo
+    function iniciarExperienciaVR() {
+      document.getElementById('setup-panel').style.display = 'none';
+      // Carga el primer video en pausa para desbloquear el contexto multimedia
+      reproducirDesdeDB('coloniatovar');
+      const scene = document.getElementById('vr-scene');
+      if (scene.enterVR) scene.enterVR();
+    }
+  </script>
+</body>
+</html>
