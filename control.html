@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Control Tótem VR</title>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: #0b0f19; color: #fff; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 28px; user-select: none; }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 16px; }
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.5px; }
+    .status { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; background: #1e293b; padding: 8px 16px; border-radius: 99px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: #ef4444; }
+    .dot.online { background: #22c55e; box-shadow: 0 0 12px #22c55e; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; margin: 28px 0; }
+    .card {
+      background: linear-gradient(145deg, #162033, #0f172a);
+      border: 2px solid #26354d; border-radius: 24px;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s ease;
+    }
+    .card:active { transform: scale(0.97); }
+    .card.active { border-color: #38bdf8; background: linear-gradient(145deg, #0c4a6e, #0f172a); box-shadow: 0 0 30px rgba(56, 189, 248, 0.25); }
+    .card h2 { font-size: 2rem; margin-bottom: 8px; }
+    .card p { color: #94a3b8; font-size: 1.05rem; }
+    .controls { display: flex; gap: 16px; }
+    button.sec {
+      flex: 1; padding: 18px; border-radius: 16px; border: 1px solid #334155;
+      background: #1e293b; color: #e2e8f0; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+    }
+    button.sec:active { background: #334155; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>EXPLORADOR 360°</h1>
+    <div class="status">
+      <span id="dot" class="dot"></span>
+      <span id="statusText">Buscando lentes Meta Quest...</span>
+    </div>
+  </header>
+
+  <main class="grid">
+    <div class="card" id="btn-coloniatovar" onclick="seleccionarDestino('coloniatovar')">
+      <h2>Colonia Tovar</h2>
+      <p>Recorrido inmersivo 360°</p>
+    </div>
+
+    <div class="card" id="btn-bahíadecata" onclick="seleccionarDestino('bahíadecata')">
+      <h2>Bahía de Cata</h2>
+      <p>Recorrido inmersivo 360°</p>
+    </div>
+  </main>
+
+  <footer class="controls">
+    <button class="sec" onclick="enviarComando('PAUSE')">Pausar / Reanudar</button>
+    <button class="sec" onclick="enviarComando('RESTART')">Reiniciar Video</button>
+    <button class="sec" onclick="conectarVisor()">Reconectar Lentes</button>
+  </footer>
+
+  <script>
+    // ID único de tu tótem (debe coincidir con visor.html)
+    const VISOR_ID = 'barbarie-totem-quest3-01';
+    const peer = new Peer();
+    let conn = null;
+
+    peer.on('open', () => {
+      conectarVisor();
+    });
+
+    function conectarVisor() {
+      if (conn) conn.close();
+      conn = peer.connect(VISOR_ID, { reliable: true });
+
+      conn.on('open', () => {
+        document.getElementById('dot').classList.add('online');
+        document.getElementById('statusText').textContent = 'Meta Quest 3 Conectado';
+      });
+
+      conn.on('close', () => {
+        document.getElementById('dot').classList.remove('online');
+        document.getElementById('statusText').textContent = 'Desconectado - Reintentando...';
+        setTimeout(conectarVisor, 3000);
+      });
+
+      conn.on('error', () => {
+        document.getElementById('dot').classList.remove('online');
+        document.getElementById('statusText').textContent = 'Esperando visor activo...';
+      });
+    }
+
+    function seleccionarDestino(id) {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+      document.getElementById('btn-' + id).classList.add('active');
+      enviarComando('PLAY', id);
+    }
+
+    function enviarComando(action, videoId = null) {
+      if (conn && conn.open) {
+        conn.send({ action, videoId });
+      } else {
+        alert('Los lentes aún no están conectados. Verifica que visor.html esté abierto en los Quest.');
+        conectarVisor();
+      }
+    }
+  </script>
+</body>
+</html>
