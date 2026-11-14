@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -50,14 +51,21 @@
     <button class="start" onclick="iniciarExperienciaVR()">INICIAR MODO VR EN TÓTEM</button>
   </div>
 
-  <!-- Escena 360° A-Frame -->
-  <a-scene id="vr-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false">
+  <!-- Escena 360° A-Frame con alta densidad de malla para evitar deformaciones en el polo -->
+  <a-scene id="vr-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" renderer="antialias: true; highRefreshRate: true">
     <a-assets>
       <video id="video-360" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
     </a-assets>
 
-    <!-- Esfera de video 360° -->
-    <a-videosphere id="esfera" src="#video-360" rotation="0 -90 0"></a-videosphere>
+    <!-- Esfera de video 360° corregida -->
+    <a-videosphere 
+      id="esfera" 
+      src="#video-360" 
+      rotation="0 -90 0" 
+      segments-width="128" 
+      segments-height="64"
+      material="shader: flat; npot: true">
+    </a-videosphere>
 
     <!-- Esfera negra interna para transición suave (fade) sin mareos -->
     <a-sphere id="fader" radius="1.5" material="color: #000; side: back; transparent: true; opacity: 1"></a-sphere>
@@ -160,7 +168,6 @@
     // 4. Desbloquear audio/video con un toque y entrar en modo inmersivo
     function iniciarExperienciaVR() {
       document.getElementById('setup-panel').style.display = 'none';
-      // Carga el primer video en pausa para desbloquear el contexto multimedia
       reproducirDesdeDB('coloniatovar');
       const scene = document.getElementById('vr-scene');
       if (scene.enterVR) scene.enterVR();
