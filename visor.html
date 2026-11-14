@@ -49,13 +49,11 @@
     <button class="start" onclick="iniciarExperienciaVR()">INICIAR MODO VR EN TÓTEM</button>
   </div>
 
-  <!-- Escena limpia: SIN segunda esfera fader para evitar parpadeos de profundidad (Z-fighting) -->
-  <a-scene id="vr-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" renderer="antialias: false; powerPreference: high-performance;">
-    <a-assets timeout="30000">
+  <a-scene id="vr-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false">
+    <a-assets>
       <video id="video-360" loop="true" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline></video>
     </a-assets>
 
-    <!-- Esfera 360° pura sin capas transparentes encima -->
     <a-videosphere 
       id="esfera" 
       src="#video-360" 
@@ -74,9 +72,9 @@
     const esferaEl = document.getElementById('esfera');
     let db;
     let videoActual = null;
-    let cambiando = false;
+    let currentBlobUrl = null;
 
-    // Optimizar textura de video en Three.js para evitar frames negros al decodificar
+    // Optimizar textura en Three.js solo cuando ya está lista
     esferaEl.addEventListener('materialtextureloaded', () => {
       const mesh = esferaEl.getObject3D('mesh');
       if (mesh && mesh.material && mesh.material.map) {
@@ -118,27 +116,35 @@
     }
 
     function reproducirDesdeDB(key) {
-      if (videoActual === key || cambiando) return;
-      cambiando = true;
+      if (!db || videoActual === key) return;
 
       const tx = db.transaction('videos', 'readonly');
       const getReq = tx.objectStore('videos').get(key);
 
       getReq.onsuccess = () => {
         const blob = getReq.result;
-        if (!blob) { cambiando = false; return; }
+        if (!blob) return;
 
-        if (videoEl.src) URL.revokeObjectURL(videoEl.src);
-        videoEl.src = URL.createObjectURL(blob);
+        videoEl.pause();
+        if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+
+        currentBlobUrl = URL.createObjectURL(blob);
+        videoEl.src = currentBlobUrl;
         videoEl.load();
 
-        videoEl.onloadeddata = () => {
-          videoEl.onloadeddata = null;
-          videoEl.play().then(() => {
+        const playPromise = videoEl.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
             videoActual = key;
-            cambiando = false;
-          }).catch(() => { cambiando = false; });
-        };
+          }).catch(() => {
+            // Si el navegador bloquea audio en el primer arranque, reproduce silenciado y luego activa audio
+            videoEl.muted = true;
+            videoEl.play().then(() => {
+              videoActual = key;
+              videoEl.muted = false;
+            });
+          });
+        }
       };
     }
 
@@ -163,6 +169,10 @@
 
     function iniciarExperienciaVR() {
       document.getElementById('setup-panel').style.display = 'none';
+      
+      // Desbloqueo síncrono del elemento <video> dentro del gesto del usuario
+      videoEl.play().catch(() => {});
+      
       reproducirDesdeDB('coloniatovar');
       const scene = document.getElementById('vr-scene');
       if (scene.enterVR) scene.enterVR();
