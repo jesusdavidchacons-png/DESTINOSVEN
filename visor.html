@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Visor VR 360° Nativo Real - Meta Quest 3</title>
+  <title>Visor VR 360° Nativo - Meta Quest 3</title>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     body { margin: 0; background: #000; color: #fff; font-family: system-ui, sans-serif; overflow: hidden; }
@@ -70,7 +70,6 @@
     let mediaBinding = null;
     let equirectLayer = null;
 
-    // 1. IndexedDB
     const req = indexedDB.open(DB_NAME, 1);
     req.onupgradeneeded = e => e.target.result.createObjectStore('videos');
     req.onsuccess = e => {
@@ -101,7 +100,6 @@
       });
     }
 
-    // 2. Crear / actualizar la capa nativa de hardware en Quest 3
     function actualizarCapaNativa() {
       if (!xrSession || !mediaBinding || !xrRefSpace || videoEl.readyState < 1) return;
 
@@ -109,22 +107,25 @@
         equirectLayer = mediaBinding.createEquirectLayer(videoEl, {
           space: xrRefSpace,
           layout: 'mono',
-          radius: 0
+          radius: 0,
+          // Cierra por completo la costura vertical (360° completos + micro-solape)
+          centralHorizontalAngle: Math.PI * 2 + 0.002,
+          upperVerticalAngle: Math.PI / 2,
+          lowerVerticalAngle: -Math.PI / 2
         });
 
-        // Rotación inicial -90 grados en Y
+        // Orientación inicial -90 grados en Y (ajusta -90 si quieres mover la costura atrás del espectador)
         const halfAngle = (-90 * Math.PI / 180) / 2;
         equirectLayer.transform = new XRRigidTransform(
           { x: 0, y: 0, z: 0 },
           { x: 0, y: Math.sin(halfAngle), z: 0, w: Math.cos(halfAngle) }
         );
 
-        // SOLO ponemos equirectLayer (sin XRWebGLLayer que lo bloquee)
         xrSession.updateRenderState({
           layers: [equirectLayer]
         });
 
-        debugBar.textContent = 'ACTIVO: Capa Hardware Nativa Quest 3 (' + videoEl.videoWidth + 'x' + videoEl.videoHeight + ')';
+        debugBar.textContent = 'ACTIVO: Capa Nativa Sin Costura (' + videoEl.videoWidth + 'x' + videoEl.videoHeight + ')';
         debugBar.style.color = '#4ade80';
       } catch (err) {
         debugBar.textContent = 'ERROR Capa Nativa: ' + err.message;
@@ -165,7 +166,6 @@
       };
     }
 
-    // 3. PeerJS desde tablet
     const peer = new Peer(VISOR_ID);
     peer.on('open', () => {
       document.getElementById('peer-status').textContent = 'Visor listo para recibir órdenes de la tablet';
@@ -183,7 +183,6 @@
       });
     });
 
-    // 4. Iniciar sesión WebXR pura con 'layers' como feature principal
     async function iniciarExperienciaVR() {
       document.getElementById('setup-panel').style.display = 'none';
       videoEl.play().catch(() => {});
@@ -195,19 +194,18 @@
       }
 
       try {
+        // 'local' centra la esfera directo a nivel de los ojos al iniciar, sin depender del suelo ni del Guardian
         xrSession = await navigator.xr.requestSession('immersive-vr', {
-          requiredFeatures: ['local-floor', 'layers']
+          requiredFeatures: ['local', 'layers']
         });
 
-        xrRefSpace = await xrSession.requestReferenceSpace('local-floor');
+        xrRefSpace = await xrSession.requestReferenceSpace('local');
         mediaBinding = new XRMediaBinding(xrSession);
 
-        // Si el video ya cargó metadata antes de entrar a VR, montamos la capa ahora
         if (videoEl.readyState >= 1) {
           actualizarCapaNativa();
         }
 
-        // Bucle mínimo para mantener viva la sesión XR
         const onXRFrame = (time, frame) => {
           if (xrSession) xrSession.requestAnimationFrame(onXRFrame);
         };
@@ -220,7 +218,7 @@
         });
 
       } catch (err) {
-        debugBar.textContent = 'Fallo al iniciar sesión XR con Layers: ' + err.message;
+        debugBar.textContent = 'Fallo al iniciar sesión XR: ' + err.message;
         debugBar.style.color = '#f87171';
       }
     }
