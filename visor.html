@@ -49,7 +49,13 @@
     <button class="start" onclick="iniciarExperienciaVR()">INICIAR MODO VR EN TÓTEM</button>
   </div>
 
-  <a-scene id="vr-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false">
+  <!-- foveationLevel: 0 evita recortes/saltos de calidad en la parte superior del visor -->
+  <a-scene 
+    id="vr-scene" 
+    vr-mode-ui="enabled: true" 
+    loading-screen="enabled: false"
+    renderer="antialias: true; highRefreshRate: true; foveationLevel: 0;">
+    
     <a-assets>
       <video id="video-360" loop="true" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline></video>
     </a-assets>
@@ -57,9 +63,11 @@
     <a-videosphere 
       id="esfera" 
       src="#video-360" 
+      radius="100"
       rotation="0 -90 0" 
-      segments-width="96" 
-      segments-height="48">
+      segments-width="128" 
+      segments-height="64"
+      material="shader: flat; npot: true; side: back;">
     </a-videosphere>
 
     <a-camera look-controls="reverseMouseDrag: false" wasd-controls-enabled="false"></a-camera>
@@ -74,16 +82,24 @@
     let videoActual = null;
     let currentBlobUrl = null;
 
-    // Optimizar textura en Three.js solo cuando ya está lista
-    esferaEl.addEventListener('materialtextureloaded', () => {
+    // Función que limpia mipmaps y sella los polos CADA VEZ que un video arranca
+    function limpiarTexturaEsfera() {
       const mesh = esferaEl.getObject3D('mesh');
       if (mesh && mesh.material && mesh.material.map) {
-        mesh.material.map.generateMipmaps = false;
-        mesh.material.map.minFilter = THREE.LinearFilter;
-        mesh.material.map.magFilter = THREE.LinearFilter;
+        const tex = mesh.material.map;
+        tex.generateMipmaps = false;
+        tex.minFilter = THREE.LinearFilter;
+        tex.magFilter = THREE.LinearFilter;
+        tex.wrapS = THREE.ClampToEdgeWrapping;
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+        tex.needsUpdate = true;
         mesh.material.needsUpdate = true;
       }
-    });
+    }
+
+    // Se ejecuta en cada cambio de video desde la tablet
+    videoEl.addEventListener('playing', limpiarTexturaEsfera);
+    esferaEl.addEventListener('materialtextureloaded', limpiarTexturaEsfera);
 
     const req = indexedDB.open(DB_NAME, 1);
     req.onupgradeneeded = e => e.target.result.createObjectStore('videos');
@@ -136,12 +152,13 @@
         if (playPromise !== undefined) {
           playPromise.then(() => {
             videoActual = key;
+            limpiarTexturaEsfera();
           }).catch(() => {
-            // Si el navegador bloquea audio en el primer arranque, reproduce silenciado y luego activa audio
             videoEl.muted = true;
             videoEl.play().then(() => {
               videoActual = key;
               videoEl.muted = false;
+              limpiarTexturaEsfera();
             });
           });
         }
@@ -169,10 +186,7 @@
 
     function iniciarExperienciaVR() {
       document.getElementById('setup-panel').style.display = 'none';
-      
-      // Desbloqueo síncrono del elemento <video> dentro del gesto del usuario
       videoEl.play().catch(() => {});
-      
       reproducirDesdeDB('coloniatovar');
       const scene = document.getElementById('vr-scene');
       if (scene.enterVR) scene.enterVR();
