@@ -2,14 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Visor VR 360° Nativo - Meta Quest 3</title>
-  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <title>Visor VR 360° Nativo Real - Meta Quest 3</title>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
+    body { margin: 0; background: #000; color: #fff; font-family: system-ui, sans-serif; overflow: hidden; }
     #setup-panel {
       position: fixed; inset: 0; z-index: 9999; background: rgba(10, 15, 28, 0.96);
-      color: #fff; font-family: system-ui, sans-serif; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; padding: 30px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;
     }
     .box { background: #1e293b; padding: 24px; border-radius: 16px; max-width: 520px; width: 100%; margin: 12px 0; }
     .row { display: flex; justify-content: space-between; align-items: center; margin: 14px 0; text-align: left; }
@@ -19,9 +18,15 @@
     }
     .ok { color: #4ade80; font-weight: bold; }
     .pending { color: #fbbf24; }
+    #debug-bar {
+      position: fixed; top: 10px; left: 10px; z-index: 10000; background: rgba(0,0,0,0.8);
+      padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; color: #38bdf8;
+    }
   </style>
 </head>
 <body>
+
+  <div id="debug-bar">Estado: Esperando inicio...</div>
 
   <div id="setup-panel">
     <h1>Configuración del Tótem VR</h1>
@@ -49,123 +54,23 @@
     <button class="start" onclick="iniciarExperienciaVR()">INICIAR MODO VR EN TÓTEM</button>
   </div>
 
-  <!-- Activamos la característica 'layers' de WebXR -->
-  <a-scene 
-    id="vr-scene" 
-    webxr="optionalFeatures: layers; referenceSpaceType: local-floor;"
-    vr-mode-ui="enabled: true" 
-    loading-screen="enabled: false"
-    renderer="antialias: true; highRefreshRate: true; foveationLevel: 0;">
-    
-    <a-assets>
-      <video id="video-360" loop="true" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline></video>
-    </a-assets>
-
-    <!-- Esfera de respaldo (solo visible si no hay capa nativa WebXR o en PC) -->
-    <a-videosphere 
-      id="esfera-fallback" 
-      src="#video-360" 
-      radius="100"
-      rotation="0 -90 0" 
-      segments-width="128" 
-      segments-height="64"
-      material="shader: flat; npot: true; side: back;">
-    </a-videosphere>
-
-    <a-camera look-controls="reverseMouseDrag: false" wasd-controls-enabled="false"></a-camera>
-  </a-scene>
+  <video id="video-360" loop playsinline webkit-playsinline crossorigin="anonymous" style="display:none;"></video>
 
   <script>
     const VISOR_ID = 'barbarie-totem-quest3-01';
     const DB_NAME = 'TotemVR_Videos';
     const videoEl = document.getElementById('video-360');
-    const sceneEl = document.getElementById('vr-scene');
-    const esferaFallback = document.getElementById('esfera-fallback');
+    const debugBar = document.getElementById('debug-bar');
 
     let db;
     let videoActual = null;
     let currentBlobUrl = null;
+    let xrSession = null;
+    let xrRefSpace = null;
+    let mediaBinding = null;
     let equirectLayer = null;
-    let xrSessionActiva = null;
 
-    // 1. Limpieza de textura para el modo respaldo (PC / sin layers)
-    function limpiarTexturaFallback() {
-      const mesh = esferaFallback.getObject3D('mesh');
-      if (mesh && mesh.material && mesh.material.map) {
-        const tex = mesh.material.map;
-        tex.generateMipmaps = false;
-        tex.minFilter = THREE.LinearFilter;
-        tex.magFilter = THREE.LinearFilter;
-        tex.wrapS = THREE.ClampToEdgeWrapping;
-        tex.wrapT = THREE.ClampToEdgeWrapping;
-        tex.needsUpdate = true;
-        mesh.material.needsUpdate = true;
-      }
-    }
-    videoEl.addEventListener('playing', limpiarTexturaFallback);
-
-    // 2. Montaje de la capa nativa WebXR Equirect Layer (Calidad nativa Quest 3)
-    async function montarCapaNativaVR() {
-      const renderer = sceneEl.renderer;
-      if (!renderer || !renderer.xr) return;
-
-      const session = renderer.xr.getSession();
-      if (!session || typeof XRMediaBinding === 'undefined') return;
-
-      xrSessionActiva = session;
-
-      try {
-        const refSpace = renderer.xr.getReferenceSpace() || await session.requestReferenceSpace('local-floor');
-        const mediaBinding = new XRMediaBinding(session);
-
-        // Creamos la capa equirectangular directa desde la etiqueta <video>
-        equirectLayer = mediaBinding.createEquirectLayer(videoEl, {
-          space: refSpace,
-          layout: 'mono', // Cambia a 'stereo-top-bottom' o 'stereo-left-right' si tu video es 3D estereoscópico
-          radius: 0       // 0 = esfera al infinito (cero paralaje y cero distorsión en polos)
-        });
-
-        // Alineamos la orientación inicial igual que rotation="0 -90 0"
-        const halfAngle = (-90 * Math.PI / 180) / 2;
-        equirectLayer.transform = new XRRigidTransform(
-          { x: 0, y: 0, z: 0 },
-          { x: 0, y: Math.sin(halfAngle), z: 0, w: Math.cos(halfAngle) }
-        );
-
-        // Inyectamos la capa nativa al compositor de las Quest 3
-        const baseLayer = session.renderState.baseLayer;
-        session.updateRenderState({
-          layers: [equirectLayer, baseLayer]
-        });
-
-        // Ocultamos la esfera 3D de WebGL para que la GPU no trabaje doble
-        esferaFallback.setAttribute('visible', 'false');
-      } catch (err) {
-        console.warn('No se pudo activar WebXR Layer, usando esfera WebGL optimizada:', err);
-        esferaFallback.setAttribute('visible', 'true');
-      }
-    }
-
-    sceneEl.addEventListener('enter-vr', () => {
-      // Subimos escala de renderizado por si cae en modo fallback
-      if (sceneEl.renderer && sceneEl.renderer.xr) {
-        sceneEl.renderer.xr.setFramebufferScaleFactor(1.5);
-      }
-      // Si el video ya tiene metadata cargada, montamos la capa nativa de inmediato
-      if (videoEl.readyState >= 1) {
-        montarCapaNativaVR();
-      } else {
-        videoEl.addEventListener('loadedmetadata', montarCapaNativaVR, { once: true });
-      }
-    });
-
-    sceneEl.addEventListener('exit-vr', () => {
-      equirectLayer = null;
-      xrSessionActiva = null;
-      esferaFallback.setAttribute('visible', 'true');
-    });
-
-    // 3. Base de datos local IndexedDB
+    // 1. IndexedDB
     const req = indexedDB.open(DB_NAME, 1);
     req.onupgradeneeded = e => e.target.result.createObjectStore('videos');
     req.onsuccess = e => {
@@ -178,7 +83,7 @@
       const tx = db.transaction('videos', 'readwrite');
       tx.objectStore('videos').put(file, key);
       tx.oncomplete = () => {
-        document.getElementById('st-' + key).textContent = 'Guardado en memoria (' + (file.size / 1048576).toFixed(0) + ' MB)';
+        document.getElementById('st-' + key).textContent = 'Guardado (' + (file.size / 1048576).toFixed(0) + ' MB)';
         document.getElementById('st-' + key).className = 'ok';
       };
     }
@@ -194,6 +99,37 @@
           }
         };
       });
+    }
+
+    // 2. Crear / actualizar la capa nativa de hardware en Quest 3
+    function actualizarCapaNativa() {
+      if (!xrSession || !mediaBinding || !xrRefSpace || videoEl.readyState < 1) return;
+
+      try {
+        equirectLayer = mediaBinding.createEquirectLayer(videoEl, {
+          space: xrRefSpace,
+          layout: 'mono',
+          radius: 0
+        });
+
+        // Rotación inicial -90 grados en Y
+        const halfAngle = (-90 * Math.PI / 180) / 2;
+        equirectLayer.transform = new XRRigidTransform(
+          { x: 0, y: 0, z: 0 },
+          { x: 0, y: Math.sin(halfAngle), z: 0, w: Math.cos(halfAngle) }
+        );
+
+        // SOLO ponemos equirectLayer (sin XRWebGLLayer que lo bloquee)
+        xrSession.updateRenderState({
+          layers: [equirectLayer]
+        });
+
+        debugBar.textContent = 'ACTIVO: Capa Hardware Nativa Quest 3 (' + videoEl.videoWidth + 'x' + videoEl.videoHeight + ')';
+        debugBar.style.color = '#4ade80';
+      } catch (err) {
+        debugBar.textContent = 'ERROR Capa Nativa: ' + err.message;
+        debugBar.style.color = '#f87171';
+      }
     }
 
     function reproducirDesdeDB(key) {
@@ -213,33 +149,27 @@
         videoEl.src = currentBlobUrl;
         videoEl.load();
 
-        // Si ya estamos dentro de VR y se cambia de video, actualizamos la capa nativa al cargar metadata
-        if (xrSessionActiva && !equirectLayer) {
-          videoEl.addEventListener('loadedmetadata', montarCapaNativaVR, { once: true });
-        }
+        videoEl.onloadedmetadata = () => {
+          actualizarCapaNativa();
+        };
 
-        const playPromise = videoEl.play();
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
+        videoEl.play().then(() => {
+          videoActual = key;
+        }).catch(() => {
+          videoEl.muted = true;
+          videoEl.play().then(() => {
             videoActual = key;
-          }).catch(() => {
-            videoEl.muted = true;
-            videoEl.play().then(() => {
-              videoActual = key;
-              videoEl.muted = false;
-            });
+            videoEl.muted = false;
           });
-        }
+        });
       };
     }
 
-    // 4. Control inalámbrico desde la tablet (PeerJS)
+    // 3. PeerJS desde tablet
     const peer = new Peer(VISOR_ID);
-
     peer.on('open', () => {
       document.getElementById('peer-status').textContent = 'Visor listo para recibir órdenes de la tablet';
     });
-
     peer.on('connection', conn => {
       conn.on('data', data => {
         if (data.action === 'PLAY' && data.videoId) {
@@ -253,11 +183,46 @@
       });
     });
 
-    function iniciarExperienciaVR() {
+    // 4. Iniciar sesión WebXR pura con 'layers' como feature principal
+    async function iniciarExperienciaVR() {
       document.getElementById('setup-panel').style.display = 'none';
       videoEl.play().catch(() => {});
       reproducirDesdeDB('coloniatovar');
-      if (sceneEl.enterVR) sceneEl.enterVR();
+
+      if (!navigator.xr) {
+        debugBar.textContent = 'WebXR no disponible en este navegador';
+        return;
+      }
+
+      try {
+        xrSession = await navigator.xr.requestSession('immersive-vr', {
+          requiredFeatures: ['local-floor', 'layers']
+        });
+
+        xrRefSpace = await xrSession.requestReferenceSpace('local-floor');
+        mediaBinding = new XRMediaBinding(xrSession);
+
+        // Si el video ya cargó metadata antes de entrar a VR, montamos la capa ahora
+        if (videoEl.readyState >= 1) {
+          actualizarCapaNativa();
+        }
+
+        // Bucle mínimo para mantener viva la sesión XR
+        const onXRFrame = (time, frame) => {
+          if (xrSession) xrSession.requestAnimationFrame(onXRFrame);
+        };
+        xrSession.requestAnimationFrame(onXRFrame);
+
+        xrSession.addEventListener('end', () => {
+          xrSession = null;
+          equirectLayer = null;
+          document.getElementById('setup-panel').style.display = 'flex';
+        });
+
+      } catch (err) {
+        debugBar.textContent = 'Fallo al iniciar sesión XR con Layers: ' + err.message;
+        debugBar.style.color = '#f87171';
+      }
     }
   </script>
 </body>
