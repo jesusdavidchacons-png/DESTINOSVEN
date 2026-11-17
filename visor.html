@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Visor VR 360° - Meta Quest 3</title>
+  <title>Visor VR 360° Nativo - Meta Quest 3</title>
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
@@ -49,9 +49,10 @@
     <button class="start" onclick="iniciarExperienciaVR()">INICIAR MODO VR EN TÓTEM</button>
   </div>
 
-  <!-- foveationLevel: 0 evita recortes/saltos de calidad en la parte superior del visor -->
+  <!-- Activamos la característica 'layers' de WebXR -->
   <a-scene 
     id="vr-scene" 
+    webxr="optionalFeatures: layers; referenceSpaceType: local-floor;"
     vr-mode-ui="enabled: true" 
     loading-screen="enabled: false"
     renderer="antialias: true; highRefreshRate: true; foveationLevel: 0;">
@@ -60,8 +61,9 @@
       <video id="video-360" loop="true" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline></video>
     </a-assets>
 
+    <!-- Esfera de respaldo (solo visible si no hay capa nativa WebXR o en PC) -->
     <a-videosphere 
-      id="esfera" 
+      id="esfera-fallback" 
       src="#video-360" 
       radius="100"
       rotation="0 -90 0" 
@@ -77,14 +79,18 @@
     const VISOR_ID = 'barbarie-totem-quest3-01';
     const DB_NAME = 'TotemVR_Videos';
     const videoEl = document.getElementById('video-360');
-    const esferaEl = document.getElementById('esfera');
+    const sceneEl = document.getElementById('vr-scene');
+    const esferaFallback = document.getElementById('esfera-fallback');
+
     let db;
     let videoActual = null;
     let currentBlobUrl = null;
+    let equirectLayer = null;
+    let xrSessionActiva = null;
 
-    // Función que limpia mipmaps y sella los polos CADA VEZ que un video arranca
-    function limpiarTexturaEsfera() {
-      const mesh = esferaEl.getObject3D('mesh');
+    // 1. Limpieza de textura para el modo respaldo (PC / sin layers)
+    function limpiarTexturaFallback() {
+      const mesh = esferaFallback.getObject3D('mesh');
       if (mesh && mesh.material && mesh.material.map) {
         const tex = mesh.material.map;
         tex.generateMipmaps = false;
@@ -96,11 +102,70 @@
         mesh.material.needsUpdate = true;
       }
     }
+    videoEl.addEventListener('playing', limpiarTexturaFallback);
 
-    // Se ejecuta en cada cambio de video desde la tablet
-    videoEl.addEventListener('playing', limpiarTexturaEsfera);
-    esferaEl.addEventListener('materialtextureloaded', limpiarTexturaEsfera);
+    // 2. Montaje de la capa nativa WebXR Equirect Layer (Calidad nativa Quest 3)
+    async function montarCapaNativaVR() {
+      const renderer = sceneEl.renderer;
+      if (!renderer || !renderer.xr) return;
 
+      const session = renderer.xr.getSession();
+      if (!session || typeof XRMediaBinding === 'undefined') return;
+
+      xrSessionActiva = session;
+
+      try {
+        const refSpace = renderer.xr.getReferenceSpace() || await session.requestReferenceSpace('local-floor');
+        const mediaBinding = new XRMediaBinding(session);
+
+        // Creamos la capa equirectangular directa desde la etiqueta <video>
+        equirectLayer = mediaBinding.createEquirectLayer(videoEl, {
+          space: refSpace,
+          layout: 'mono', // Cambia a 'stereo-top-bottom' o 'stereo-left-right' si tu video es 3D estereoscópico
+          radius: 0       // 0 = esfera al infinito (cero paralaje y cero distorsión en polos)
+        });
+
+        // Alineamos la orientación inicial igual que rotation="0 -90 0"
+        const halfAngle = (-90 * Math.PI / 180) / 2;
+        equirectLayer.transform = new XRRigidTransform(
+          { x: 0, y: 0, z: 0 },
+          { x: 0, y: Math.sin(halfAngle), z: 0, w: Math.cos(halfAngle) }
+        );
+
+        // Inyectamos la capa nativa al compositor de las Quest 3
+        const baseLayer = session.renderState.baseLayer;
+        session.updateRenderState({
+          layers: [equirectLayer, baseLayer]
+        });
+
+        // Ocultamos la esfera 3D de WebGL para que la GPU no trabaje doble
+        esferaFallback.setAttribute('visible', 'false');
+      } catch (err) {
+        console.warn('No se pudo activar WebXR Layer, usando esfera WebGL optimizada:', err);
+        esferaFallback.setAttribute('visible', 'true');
+      }
+    }
+
+    sceneEl.addEventListener('enter-vr', () => {
+      // Subimos escala de renderizado por si cae en modo fallback
+      if (sceneEl.renderer && sceneEl.renderer.xr) {
+        sceneEl.renderer.xr.setFramebufferScaleFactor(1.5);
+      }
+      // Si el video ya tiene metadata cargada, montamos la capa nativa de inmediato
+      if (videoEl.readyState >= 1) {
+        montarCapaNativaVR();
+      } else {
+        videoEl.addEventListener('loadedmetadata', montarCapaNativaVR, { once: true });
+      }
+    });
+
+    sceneEl.addEventListener('exit-vr', () => {
+      equirectLayer = null;
+      xrSessionActiva = null;
+      esferaFallback.setAttribute('visible', 'true');
+    });
+
+    // 3. Base de datos local IndexedDB
     const req = indexedDB.open(DB_NAME, 1);
     req.onupgradeneeded = e => e.target.result.createObjectStore('videos');
     req.onsuccess = e => {
@@ -148,23 +213,27 @@
         videoEl.src = currentBlobUrl;
         videoEl.load();
 
+        // Si ya estamos dentro de VR y se cambia de video, actualizamos la capa nativa al cargar metadata
+        if (xrSessionActiva && !equirectLayer) {
+          videoEl.addEventListener('loadedmetadata', montarCapaNativaVR, { once: true });
+        }
+
         const playPromise = videoEl.play();
         if (playPromise !== undefined) {
           playPromise.then(() => {
             videoActual = key;
-            limpiarTexturaEsfera();
           }).catch(() => {
             videoEl.muted = true;
             videoEl.play().then(() => {
               videoActual = key;
               videoEl.muted = false;
-              limpiarTexturaEsfera();
             });
           });
         }
       };
     }
 
+    // 4. Control inalámbrico desde la tablet (PeerJS)
     const peer = new Peer(VISOR_ID);
 
     peer.on('open', () => {
@@ -188,8 +257,7 @@
       document.getElementById('setup-panel').style.display = 'none';
       videoEl.play().catch(() => {});
       reproducirDesdeDB('coloniatovar');
-      const scene = document.getElementById('vr-scene');
-      if (scene.enterVR) scene.enterVR();
+      if (sceneEl.enterVR) sceneEl.enterVR();
     }
   </script>
 </body>
